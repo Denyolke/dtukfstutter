@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F4F6"
+    android:padding="16dp">
+
+    <!-- Top Bar with Back Button and Hearts -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="✕"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/pill_blue"
+            android:padding="0dp"
+            style="?attr/borderlessButtonStyle"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/tvHearts"
+            android:text="❤️❤️❤️"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Question -->
+    <TextView
+        android:id="@+id/tvQuestion"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#1F2937"
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Options RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOptions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="false"/>
+
+    <!-- Explanation (shown after answer) -->
+    <TextView
+        android:id="@+id/tvExplanation"
+        android:visibility="gone"
+        android:textColor="#374151"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:background="#FFF3CD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Action Button -->
+    <Button
+        android:id="@+id/btnAction"
+        android:text="Check Answer"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:backgroundTint="#3B82F6"/>
+
+</LinearLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511476465480",
+    "project_id": "dtukfstutter",
+    "storage_bucket": "dtukfstutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511476465480:android:c39e3fa8a61c9c0f9dbd7d",
+        "android_client_info": {
+          "package_name": "com.example.stutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD60zhqZpAI_xFKK43oW5taQ2K7qdkKZpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
