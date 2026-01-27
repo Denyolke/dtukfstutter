@@ -57,8 +57,8 @@ public class ProfileFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 
                 // Display user info
-                tvUsername.setText("Username: " + profile.username);
-                tvEmail.setText("Email: " + profile.email);
+                tvUsername.setText(profile.username);
+                tvEmail.setText(profile.email);
                 tvTotalXP.setText("Total XP: " + profile.totalXP);
                 tvStreak.setText("Streak: " + profile.streak + " days");
                 tvLessonsCompleted.setText("Lessons Completed: " + profile.completedLessons);
