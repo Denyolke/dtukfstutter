@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Stutter</string>
-    <string name="title_activity_auth">AuthActivity</string>
+    <string name="title_activity_auth">Stutter</string>
 </resources>
