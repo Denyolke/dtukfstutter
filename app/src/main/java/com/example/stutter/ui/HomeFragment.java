@@ -30,7 +30,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
         vm = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
         // Setup RecyclerView
@@ -62,30 +62,5 @@ public class HomeFragment extends Fragment {
                 tvXP.setText("⭐ " + xp);
             }
         });
-
-        // Wire bottom nav buttons - find them from parent activity
-        View parentView = getActivity().getWindow().getDecorView();
-        
-        LinearLayout btnSettingsContainer = parentView.findViewById(R.id.btnSettingsContainer);
-        LinearLayout btnHomeContainer = parentView.findViewById(R.id.btnHomeContainer);
-        LinearLayout btnProfileContainer = parentView.findViewById(R.id.btnProfileContainer);
-
-        if (btnSettingsContainer != null) {
-            btnSettingsContainer.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "Settings screen not implemented yet", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        if (btnHomeContainer != null) {
-            btnHomeContainer.setOnClickListener(v -> {
-                // Already on home, do nothing
-            });
-        }
-
-        if (btnProfileContainer != null) {
-            btnProfileContainer.setOnClickListener(v -> {
-                Toast.makeText(requireContext(), "Profile screen not implemented yet", Toast.LENGTH_SHORT).show();
-            });
-        }
     }
 }

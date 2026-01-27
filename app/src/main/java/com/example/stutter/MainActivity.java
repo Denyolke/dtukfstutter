@@ -6,8 +6,12 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.stutter.firebase.FirebaseAuthManager;
 import com.example.stutter.ui.AppViewModel;
 import com.example.stutter.ui.HomeFragment;
+import com.example.stutter.ui.ProfileFragment;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +23,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check if user is logged in
+        FirebaseAuthManager authManager = FirebaseAuthManager.getInstance();
+        FirebaseUser user = authManager.getCurrentUser();
+
+        if (user == null) {
+            // User not logged in, go to auth activity
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         vm = new ViewModelProvider(this).get(AppViewModel.class);
@@ -41,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnProfileContainer.setOnClickListener(v -> {
-            // Profile not implemented yet
-            android.widget.Toast.makeText(this, "Profile screen not implemented yet", android.widget.Toast.LENGTH_SHORT).show();
+            // Go to profile
+            replace(new ProfileFragment(), false);
         });
 
         // Load home fragment on startup
@@ -53,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void replace(Fragment f, boolean addToBackStack) {
         if (f == null) return;
-        
+
         var tx = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, f);
