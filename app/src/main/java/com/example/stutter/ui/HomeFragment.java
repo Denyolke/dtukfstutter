@@ -14,9 +14,7 @@ import com.example.stutter.MainActivity;
 import com.example.stutter.R;
 import com.example.stutter.ui.adapter.TopicsAdapter;
 
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class HomeFragment extends Fragment {
@@ -40,9 +38,10 @@ public class HomeFragment extends Fragment {
         // Observe topics and set adapter
         vm.topics.observe(getViewLifecycleOwner(), topics -> {
             if (topics != null && !topics.isEmpty()) {
+                // Navigate to LEVEL SELECTION instead of quiz
                 rv.setAdapter(new TopicsAdapter(topics, topicId -> {
                     vm.selectedTopicId.setValue(topicId);
-                    ((MainActivity) requireActivity()).replace(new QuizFragment(), true);
+                    ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), true);
                 }));
             }
         });

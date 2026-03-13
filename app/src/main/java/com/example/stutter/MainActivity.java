@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.stutter.firebase.FirebaseAuthManager;
 import com.example.stutter.ui.AppViewModel;
 import com.example.stutter.ui.HomeFragment;
+import com.example.stutter.ui.LeaderboardFragment;
 import com.example.stutter.ui.ProfileFragment;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -46,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Wire up bottom nav click listeners
         btnSettingsContainer.setOnClickListener(v -> {
-            // Settings not implemented yet
-            android.widget.Toast.makeText(this, "Settings screen not implemented yet", android.widget.Toast.LENGTH_SHORT).show();
+            // Replace Settings with Leaderboard
+            replace(new LeaderboardFragment(), false);
         });
 
         btnHomeContainer.setOnClickListener(v -> {

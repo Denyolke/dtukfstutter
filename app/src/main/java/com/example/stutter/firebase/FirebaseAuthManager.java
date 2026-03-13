@@ -115,17 +115,27 @@ public class FirebaseAuthManager {
     }
 
     /**
-     * Update user stats in Firestore
+     * Update user stats by ADDING XP (not replacing)
+     * Gets current XP and adds new XP
      */
-    public void updateUserStats(String userId, int newXP, int newStreak, int completedLessons) {
-        mFirestore.collection("users").document(userId)
-                .update(
-                        "totalXP", newXP,
-                        "streak", newStreak,
-                        "completedLessons", completedLessons
-                )
-                .addOnFailureListener(e -> {
-                    System.err.println("Error updating stats: " + e.getMessage());
+    public void updateUserStats(String userId, int xpToAdd) {
+        mFirestore.collection("users").document(userId).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        // Get current XP
+                        Long currentXPObj = doc.getLong("totalXP");
+                        int currentXP = currentXPObj != null ? currentXPObj.intValue() : 0;
+                        
+                        // Add new XP
+                        int newXP = currentXP + xpToAdd;
+                        
+                        // Update in Firestore
+                        mFirestore.collection("users").document(userId)
+                                .update("totalXP", newXP)
+                                .addOnFailureListener(e -> {
+                                    System.err.println("Error updating XP: " + e.getMessage());
+                                });
+                    }
                 });
     }
 

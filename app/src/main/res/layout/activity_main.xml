@@ -42,13 +42,13 @@
                 android:id="@+id/tvSettingsIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="⚙️"
+                android:text="🏆"
                 android:textSize="24sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="Leaderboard"
                 android:textSize="10sp"
                 android:textColor="#6B7280"
                 android:layout_marginTop="2dp" />

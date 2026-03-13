@@ -35,7 +35,20 @@
             android:text="❤️❤️❤️"
             android:textSize="20sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"/>
+
+        <!-- Test button to add hearts (for testing only) -->
+        <Button
+            android:id="@+id/btnAddHeart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="H"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+            android:background="#DC2626"
+            android:padding="0dp"
+            style="?attr/borderlessButtonStyle" />
 
     </LinearLayout>
 
