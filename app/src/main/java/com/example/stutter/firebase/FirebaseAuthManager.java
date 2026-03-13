@@ -85,6 +85,7 @@ public class FirebaseAuthManager {
      */
     private void createUserProfile(String userId, String email, String username, OnAuthListener listener) {
         UserProfile profile = new UserProfile(userId, username, email, 0, 0, 0);
+        profile.lastActivityDate = System.currentTimeMillis(); // Set to now
         
         mFirestore.collection("users").document(userId)
                 .set(profile)
@@ -115,28 +116,80 @@ public class FirebaseAuthManager {
     }
 
     /**
-     * Update user stats by ADDING XP (not replacing)
-     * Gets current XP and adds new XP
+     * Update user stats: add XP, update streak, increment completed lessons
+     * Called when user completes a quiz successfully
      */
-    public void updateUserStats(String userId, int xpToAdd) {
+    public void updateUserStatsOnQuizCompletion(String userId, int xpToAdd) {
         mFirestore.collection("users").document(userId).get()
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
-                        // Get current XP
+                        // Get current values
                         Long currentXPObj = doc.getLong("totalXP");
                         int currentXP = currentXPObj != null ? currentXPObj.intValue() : 0;
                         
-                        // Add new XP
-                        int newXP = currentXP + xpToAdd;
+                        Long completedObj = doc.getLong("completedLessons");
+                        int currentCompleted = completedObj != null ? completedObj.intValue() : 0;
                         
-                        // Update in Firestore
+                        Long lastActivityObj = doc.getLong("lastActivityDate");
+                        long lastActivityDate = lastActivityObj != null ? lastActivityObj : 0;
+                        
+                        Long streakObj = doc.getLong("streak");
+                        int currentStreak = streakObj != null ? streakObj.intValue() : 0;
+                        
+                        // Get current time
+                        long currentTime = System.currentTimeMillis();
+                        
+                        // Calculate streak
+                        int newStreak = calculateStreak(lastActivityDate, currentTime, currentStreak);
+                        
+                        // Update all stats
                         mFirestore.collection("users").document(userId)
-                                .update("totalXP", newXP)
+                                .update(
+                                        "totalXP", currentXP + xpToAdd,
+                                        "completedLessons", currentCompleted + 1,
+                                        "lastActivityDate", currentTime,
+                                        "streak", newStreak
+                                )
                                 .addOnFailureListener(e -> {
-                                    System.err.println("Error updating XP: " + e.getMessage());
+                                    System.err.println("Error updating stats: " + e.getMessage());
                                 });
                     }
                 });
+    }
+
+    /**
+     * Calculate streak based on last activity date
+     * 
+     * Rules:
+     * - If last activity was today (same calendar day): streak stays same
+     * - If last activity was yesterday: streak increases by 1
+     * - If last activity was >24 hours ago: streak resets to 1
+     */
+    private int calculateStreak(long lastActivityDate, long currentTime, int currentStreak) {
+        if (lastActivityDate == 0) {
+            // First activity ever
+            return 1;
+        }
+        
+        // Get difference in milliseconds
+        long diffMs = currentTime - lastActivityDate;
+        
+        // 24 hours in milliseconds
+        long twentyFourHours = 24 * 60 * 60 * 1000L;
+        
+        if (diffMs < twentyFourHours) {
+            // Activity within 24 hours (same day or less than 24 hours)
+            // Streak stays the same (already completed today)
+            return currentStreak;
+        } else if (diffMs < (2 * twentyFourHours)) {
+            // Activity between 24-48 hours ago (yesterday)
+            // Increment streak
+            return currentStreak + 1;
+        } else {
+            // More than 48 hours ago (missed a day)
+            // Reset streak to 1
+            return 1;
+        }
     }
 
     /**

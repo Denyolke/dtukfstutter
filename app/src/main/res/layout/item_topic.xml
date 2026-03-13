@@ -60,6 +60,8 @@
         android:layout_height="10dp"
         android:layout_marginTop="10dp"
         android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
         app:layout_constraintStart_toStartOf="@id/tvTopicTitle"
         app:layout_constraintTop_toBottomOf="@id/tvTopicDesc"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -68,7 +70,7 @@
         android:id="@+id/tvLessons"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="3/5 lessons completed"
+        android:text="0/10 levels completed"
         android:textColor="#6B7280"
         android:textSize="12sp"
         android:layout_marginTop="6dp"

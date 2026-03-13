@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.stutter.MainActivity;
 import com.example.stutter.R;
 import com.example.stutter.firebase.FirebaseAuthManager;
+import com.example.stutter.model.Level;
 import com.google.firebase.auth.FirebaseUser;
 
 public class QuizCompletionFragment extends Fragment {
@@ -28,52 +29,77 @@ public class QuizCompletionFragment extends Fragment {
         FirebaseAuthManager authManager = FirebaseAuthManager.getInstance();
         FirebaseUser user = authManager.getCurrentUser();
 
+        Level level = vm.selectedLevel.getValue();
         Integer score = vm.quizScore.getValue();
         Integer totalQuestions = vm.totalQuestions.getValue();
 
+        if (score == null) score = 0;
+        if (totalQuestions == null) totalQuestions = 3;
+
         // Display score
         TextView tvScore = v.findViewById(R.id.tvScore);
-        TextView tvScoreLabel = v.findViewById(R.id.tvScoreLabel);
-        if (score != null && totalQuestions != null) {
+        if (tvScore != null) {
             tvScore.setText(score + "/" + totalQuestions);
-            tvScoreLabel.setText("Correct Answers");
         }
 
-        // Display XP earned
-        TextView tvXP = v.findViewById(R.id.tvXP);
-        tvXP.setText("+15 XP Earned!");
-
-        // Perfect score message
+        // Display message
         TextView tvMessage = v.findViewById(R.id.tvMessage);
-        if (score != null && totalQuestions != null && score == totalQuestions) {
-            tvMessage.setText("🎉 Perfect Score! Amazing!");
-            tvMessage.setTextColor(0xFF4CAF50); // Green
-        } else if (score != null && totalQuestions != null && score >= (totalQuestions * 0.8)) {
-            tvMessage.setText("Great job! 🌟");
-            tvMessage.setTextColor(0xFF2196F3); // Blue
-        } else {
-            tvMessage.setText("Good effort! Keep improving.");
-            tvMessage.setTextColor(0xFF1F2937); // Dark gray
+        if (tvMessage != null) {
+            if (score == totalQuestions) {
+                tvMessage.setText("🎉 Perfect Score!");
+                tvMessage.setTextColor(0xFF4CAF50);
+            } else if (score >= (totalQuestions * 0.67)) {
+                tvMessage.setText("Great job! 🌟");
+                tvMessage.setTextColor(0xFF2196F3);
+            } else {
+                tvMessage.setText("Good effort!");
+                tvMessage.setTextColor(0xFF1F2937);
+            }
         }
 
-        // Continue to next level
+        // Display XP
+        int xpEarned = 0;
+        if (level != null) {
+            xpEarned = level.xpReward;
+        }
+
+        TextView tvXP = v.findViewById(R.id.tvXP);
+        if (tvXP != null) {
+            tvXP.setText("+" + xpEarned + " XP Earned!");
+        }
+
+        // Continue button
         Button btnContinue = v.findViewById(R.id.btnContinue);
-        btnContinue.setOnClickListener(x -> {
-            // Update user XP in Firebase
-            if (user != null) {
-                authManager.updateUserStats(user.getUid(), 15);
-            }
-            
-            vm.resetQuiz();
-            // Go back to level selection
-            ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
-        });
+        if (btnContinue != null) {
+            btnContinue.setOnClickListener(x -> {
+                // Update user stats in Firebase
+                if (user != null && level != null) {
+                    authManager.updateUserStatsOnQuizCompletion(user.getUid(), level.xpReward);
+
+                    // Update topic progress
+                    if (vm.topics.getValue() != null) {
+                        for (com.example.stutter.model.Topic topic : vm.topics.getValue()) {
+                            if (topic.id.equals(level.topicId)) {
+                                int newCompleted = topic.completedLessons + 1;
+                                vm.updateTopicProgress(level.topicId, newCompleted);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                vm.resetQuiz();
+                ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
+            });
+        }
 
         // Try again button
         Button btnTryAgain = v.findViewById(R.id.btnTryAgain);
-        btnTryAgain.setOnClickListener(x -> {
-            vm.resetQuiz();
-            ((MainActivity) requireActivity()).replace(new QuizFragment(), true);
-        });
+        if (btnTryAgain != null) {
+            btnTryAgain.setOnClickListener(x -> {
+                vm.resetQuiz();
+                ((MainActivity) requireActivity()).replace(new QuizFragment(), true);
+            });
+        }
     }
 }

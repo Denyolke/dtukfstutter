@@ -45,13 +45,16 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.VH> {
         h.tvTitle.setText(t.title);
         h.tvDesc.setText(t.description);
 
-        // Calculate and set progress
-        int progress = t.totalLessons > 0 
-            ? (int) ((t.completedLessons * 100f) / t.totalLessons)
-            : 0;
-        h.progress.setProgress(progress);
+        // Calculate progress percentage based on LEVELS (10 total)
+        // Each topic has 10 levels
+        int totalLevels = 10;
+        int completedLevels = t.completedLessons; // This represents completed levels
+        
+        int progressPercent = (completedLevels * 100) / totalLevels;
+        h.progress.setProgress(progressPercent);
 
-        h.tvLessons.setText(t.completedLessons + "/" + t.totalLessons + " lessons completed");
+        // Display "X/10 levels completed" (changed from "lessons" to "levels")
+        h.tvLessons.setText(completedLevels + "/" + totalLevels + " levels completed");
 
         // Show lock icon if locked
         h.tvLock.setVisibility(locked ? View.VISIBLE : View.GONE);
