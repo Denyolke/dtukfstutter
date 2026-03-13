@@ -1,12 +1,8 @@
 package com.example.stutter.ui;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,12 +34,14 @@ public class QuizFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle b) {
         super.onViewCreated(v, b);
-
+        
         vm = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        questions = vm.getQuestionsForSelectedLevel();
-
+        
+        // Get questions from selected LEVEL (not topic)
+        questions = vm.getQuestionsForSelectedTopic(); // Uses selectedTopicId
+        
         if (questions == null || questions.isEmpty()) {
-            Toast.makeText(requireContext(), "No questions found for this level", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "No questions found", Toast.LENGTH_SHORT).show();
             ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
             return;
         }
@@ -54,16 +52,21 @@ public class QuizFragment extends Fragment {
         ProgressBar progress = v.findViewById(R.id.progress);
         Button btn = v.findViewById(R.id.btnAction);
         Button btnBack = v.findViewById(R.id.btnBack);
-        Button btnAddHeart = v.findViewById(R.id.btnAddHeart);
+        Button btnAddHeart = v.findViewById(R.id.btnAddHeart); // Test button
 
         RecyclerView rv = v.findViewById(R.id.rvOptions);
         rv.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         loadQuestion(tvHearts, tvQuestion, tvExplanation, progress, rv, btn);
 
-        btnBack.setOnClickListener(x ->
-                ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false));
+        // Back button - go back to level selection instead of home
+        if (btnBack != null) {
+            btnBack.setOnClickListener(x -> {
+                ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
+            });
+        }
 
+        // Test button to add heart (for testing only - press H key)
         if (btnAddHeart != null) {
             btnAddHeart.setOnClickListener(x -> {
                 hearts++;
@@ -71,12 +74,15 @@ public class QuizFragment extends Fragment {
                 Toast.makeText(requireContext(), "Heart added! Total: " + hearts, Toast.LENGTH_SHORT).show();
             });
 
+            // Also respond to hardware H key (for testing)
             v.setOnKeyListener((v1, keyCode, event) -> {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_H) {
-                    hearts++;
-                    tvHearts.setText(getHeartsDisplay());
-                    Toast.makeText(requireContext(), "Heart added! Total: " + hearts, Toast.LENGTH_SHORT).show();
-                    return true;
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_H) {
+                        hearts++;
+                        tvHearts.setText(getHeartsDisplay());
+                        Toast.makeText(requireContext(), "Heart added! Total: " + hearts, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                 }
                 return false;
             });
@@ -100,6 +106,7 @@ public class QuizFragment extends Fragment {
                 tvExplanation.setText(q.explanation);
                 tvExplanation.setVisibility(View.VISIBLE);
 
+                // Check answer
                 boolean isCorrect = sel == q.correctAnswer;
                 if (isCorrect) {
                     score++;
@@ -111,23 +118,29 @@ public class QuizFragment extends Fragment {
 
                 btn.setText("Continue");
             } else {
+                // Move to next question or end quiz
                 index++;
                 checked = false;
 
+                // Check if out of hearts
                 if (hearts <= 0) {
+                    // Game over - out of hearts!
                     vm.quizScore.setValue(score);
-                    vm.quizXP.setValue(0);
+                    vm.quizXP.setValue(0); // NO XP if out of hearts
                     vm.totalQuestions.setValue(questions.size());
-                    vm.gameOver.setValue(true);
-
-                    ((MainActivity) requireActivity()).replace(new GameOverFragment(), false);
+                    vm.gameOver.setValue(true); // Signal game over
+                    
+                    ((MainActivity) requireActivity())
+                            .replace(new GameOverFragment(), false);
                 } else if (index >= questions.size()) {
+                    // Quiz complete with hearts remaining!
                     vm.quizScore.setValue(score);
-                    vm.quizXP.setValue(vm.selectedLevel.getValue() != null ? vm.selectedLevel.getValue().xpReward : 15);
+                    vm.quizXP.setValue(15); // 15 XP only if hearts remain
                     vm.totalQuestions.setValue(questions.size());
                     vm.gameOver.setValue(false);
-
-                    ((MainActivity) requireActivity()).replace(new QuizCompletionFragment(), false);
+                    
+                    ((MainActivity) requireActivity())
+                            .replace(new QuizCompletionFragment(), false);
                 } else {
                     loadQuestion(tvHearts, tvQuestion, tvExplanation, progress, rv, btn);
                 }
@@ -137,7 +150,9 @@ public class QuizFragment extends Fragment {
 
     private String getHeartsDisplay() {
         StringBuilder heartsDisplay = new StringBuilder();
-        for (int i = 0; i < hearts; i++) heartsDisplay.append("❤️");
+        for (int i = 0; i < hearts; i++) {
+            heartsDisplay.append("❤️");
+        }
         return heartsDisplay.toString();
     }
 
@@ -148,11 +163,14 @@ public class QuizFragment extends Fragment {
         if (index >= questions.size()) return;
 
         Question q = questions.get(index);
-
+        
+        // Update hearts display
         tvHearts.setText(getHeartsDisplay());
+        
         tvQuestion.setText(q.question);
         tvExplanation.setVisibility(View.GONE);
-
+        
+        // Update progress
         int progressPercent = (int) ((index * 100f) / questions.size());
         progress.setProgress(progressPercent);
 

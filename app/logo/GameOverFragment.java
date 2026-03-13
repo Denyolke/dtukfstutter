@@ -1,9 +1,8 @@
 package com.example.stutter.ui;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.stutter.MainActivity;
 import com.example.stutter.R;
-import com.example.stutter.model.Level;
 
 public class GameOverFragment extends Fragment {
 
@@ -28,8 +26,8 @@ public class GameOverFragment extends Fragment {
 
         Integer score = vm.quizScore.getValue();
         Integer totalQuestions = vm.totalQuestions.getValue();
-        Level level = vm.selectedLevel.getValue();
 
+        // Display info
         TextView tvTitle = v.findViewById(R.id.tvTitle);
         TextView tvScore = v.findViewById(R.id.tvScore);
         TextView tvScoreLabel = v.findViewById(R.id.tvScoreLabel);
@@ -43,19 +41,19 @@ public class GameOverFragment extends Fragment {
         }
 
         tvMessage.setText("You ran out of hearts! Practice makes perfect. Try again!");
-        tvMessage.setTextColor(0xFFDC2626);
+        tvMessage.setTextColor(0xFFDC2626); // Red color
 
+        // Try Again button
         Button btnTryAgain = v.findViewById(R.id.btnTryAgain);
-        Button btnBack = v.findViewById(R.id.btnBack);
-
         btnTryAgain.setOnClickListener(x -> {
-            vm.resetQuizSessionOnly();
-            vm.selectedLevel.setValue(level);
+            vm.resetQuiz();
             ((MainActivity) requireActivity()).replace(new QuizFragment(), true);
         });
 
+        // Back to Levels button
+        Button btnBack = v.findViewById(R.id.btnBack);
         btnBack.setOnClickListener(x -> {
-            vm.resetQuizSessionOnly();
+            vm.resetQuiz();
             ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
         });
     }

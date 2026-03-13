@@ -9,7 +9,6 @@ import com.example.stutter.model.Question;
 import com.example.stutter.model.Topic;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,25 +26,31 @@ public class AppViewModel extends ViewModel {
     public MutableLiveData<Integer> totalQuestions = new MutableLiveData<>(0);
     public MutableLiveData<Boolean> gameOver = new MutableLiveData<>(false);
 
-    private final Map<String, Map<Integer, List<Question>>> questionsBank =
-            MockRepository.getQuestionsBankByTopicAndLevel();
+    private final Map<String, List<Question>> questionsBank = MockRepository.getQuestionsBank();
 
     public void load() {
+        // Load topics from Firestore instead of regenerating from MockRepository
         loadTopicsFromFirestore();
     }
 
+    /**
+     * Load topics from Firestore with actual progress data
+     */
     private void loadTopicsFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        
         db.collection("topics")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    List<Topic> loadedTopics = new ArrayList<>();
-
+                    List<Topic> loadedTopics = new java.util.ArrayList<>();
+                    
+                    // If no topics in Firestore, create default ones
                     if (querySnapshot.isEmpty()) {
                         loadedTopics = MockRepository.getTopics();
+                        // Save them to Firestore for future loads
                         saveTopicsToFirestore(loadedTopics);
                     } else {
+                        // Load from Firestore
                         for (var doc : querySnapshot.getDocuments()) {
                             Topic topic = doc.toObject(Topic.class);
                             if (topic != null) {
@@ -53,89 +58,59 @@ public class AppViewModel extends ViewModel {
                             }
                         }
                     }
-
+                    
                     topics.setValue(loadedTopics);
                 })
                 .addOnFailureListener(e -> {
+                    // If Firestore fails, use mock data
                     System.err.println("Error loading topics: " + e.getMessage());
                     topics.setValue(MockRepository.getTopics());
                 });
     }
 
+    /**
+     * Save topics to Firestore (called on first load)
+     */
     private void saveTopicsToFirestore(List<Topic> topicsToSave) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
+        
         for (Topic topic : topicsToSave) {
-            db.collection("topics")
-                    .document(topic.id)
+            db.collection("topics").document(topic.id)
                     .set(topic)
-                    .addOnFailureListener(e ->
-                            System.err.println("Error saving topic: " + e.getMessage()));
+                    .addOnFailureListener(e -> {
+                        System.err.println("Error saving topic: " + e.getMessage());
+                    });
         }
     }
 
+    /**
+     * Update topic progress in Firestore after completing a level
+     */
     public void updateTopicProgress(String topicId, int newCompletedLessons) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("topics")
-                .document(topicId)
-                .update(
-                        "completedLessons", newCompletedLessons,
-                        "completed", newCompletedLessons >= 10
-                )
-                .addOnFailureListener(e ->
-                        System.err.println("Error updating topic progress: " + e.getMessage()));
-
-        // update local list too
-        List<Topic> currentTopics = topics.getValue();
-        if (currentTopics != null) {
-            for (Topic topic : currentTopics) {
-                if (topic.id.equals(topicId)) {
-                    topic.completedLessons = newCompletedLessons;
-                    topic.completed = newCompletedLessons >= 10;
-                    break;
-                }
-            }
-            topics.setValue(currentTopics);
-        }
+        
+        db.collection("topics").document(topicId)
+                .update("completedLessons", newCompletedLessons)
+                .addOnFailureListener(e -> {
+                    System.err.println("Error updating topic progress: " + e.getMessage());
+                });
     }
 
-    public List<Level> getLevelsForSelectedTopic() {
-        String topicId = selectedTopicId.getValue();
-        List<Topic> currentTopics = topics.getValue();
-
-        if (topicId == null || currentTopics == null) return new ArrayList<>();
-
-        for (Topic topic : currentTopics) {
-            if (topic.id.equals(topicId)) {
-                return MockRepository.getLevelsForTopic(topicId, topic.completedLessons);
-            }
-        }
-
-        return new ArrayList<>();
+    public List<Question> getQuestionsForSelectedTopic() {
+        String id = selectedTopicId.getValue();
+        if (id == null) return null;
+        return questionsBank.get(id);
     }
 
-    public List<Question> getQuestionsForSelectedLevel() {
-        String topicId = selectedTopicId.getValue();
-        Level level = selectedLevel.getValue();
-
-        if (topicId == null || level == null) return null;
-
-        Map<Integer, List<Question>> topicQuestions = questionsBank.get(topicId);
-        if (topicQuestions == null) return null;
-
-        return topicQuestions.get(level.levelNumber);
+    public List<Question> getQuestionsForLevel(Level level) {
+        // Get questions for specific level
+        // For now, return all questions from the topic
+        String id = selectedTopicId.getValue();
+        if (id == null) return null;
+        return questionsBank.get(id);
     }
 
-    public void resetQuizSessionOnly() {
-        selectedLevel.setValue(null);
-        quizScore.setValue(0);
-        quizXP.setValue(0);
-        totalQuestions.setValue(0);
-        gameOver.setValue(false);
-    }
-
-    public void resetAllQuizState() {
+    public void resetQuiz() {
         selectedTopicId.setValue(null);
         selectedLevel.setValue(null);
         quizScore.setValue(0);
