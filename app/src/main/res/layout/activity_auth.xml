@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
     android:gravity="center"
     android:background="@drawable/bg_gradient_blue">
 
-    <!-- Logo/Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,49 +17,50 @@
         android:textColor="#2563EB"
         android:layout_marginBottom="32dp" />
 
-    <!-- Subtitle -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Learn Informatcs, Master Your Skills"
+        android:text="Learn Informatics, Master Your Skills"
         android:textSize="14sp"
         android:textColor="#6B7280"
         android:layout_marginBottom="40dp" />
 
-    <!-- Email Input -->
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:background="@drawable/card_white"
+        android:paddingHorizontal="16dp"
+        android:textColor="#111827"
+        android:textColorHint="#9CA3AF"
+        android:background="@drawable/input_rounded_white"
         android:layout_marginBottom="12dp" />
 
-    <!-- Username Input (Hidden by default) -->
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Username"
-        android:padding="12dp"
-        android:background="@drawable/card_white"
+        android:paddingHorizontal="16dp"
+        android:textColor="#111827"
+        android:textColorHint="#9CA3AF"
+        android:background="@drawable/input_rounded_white"
         android:layout_marginBottom="12dp"
         android:visibility="gone" />
 
-    <!-- Password Input -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:hint="Password"
         android:inputType="textPassword"
-        android:padding="12dp"
-        android:background="@drawable/card_white"
+        android:paddingHorizontal="16dp"
+        android:textColor="#111827"
+        android:textColorHint="#9CA3AF"
+        android:background="@drawable/input_rounded_white"
         android:layout_marginBottom="20dp" />
 
-    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="40dp"
@@ -67,19 +68,19 @@
         android:visibility="gone"
         android:layout_marginBottom="20dp" />
 
-    <!-- Auth Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAuth"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:text="Login"
+        android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:background="#2563EB"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="#1d5dea"
+        app:cornerRadius="26dp" />
 
-    <!-- Toggle Button -->
     <TextView
         android:id="@+id/tvToggleMode"
         android:layout_width="wrap_content"

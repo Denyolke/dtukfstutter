@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
     android:background="@drawable/bg_gradient_blue">
@@ -172,12 +173,16 @@
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:text="Logout"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:textSize="16sp"
-        android:background="#EF4444"
-        android:layout_marginBottom="16dp" />
+        android:background="@drawable/btn_auth_blue"
+        android:layout_marginBottom="16dp"
+        app:backgroundTint="#1d5dea"
+        app:cornerRadius="26dp" />
+
+
 
 </LinearLayout>
