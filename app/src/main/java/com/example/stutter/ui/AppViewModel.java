@@ -7,9 +7,12 @@ import com.example.stutter.data.MockRepository;
 import com.example.stutter.model.Level;
 import com.example.stutter.model.Question;
 import com.example.stutter.model.Topic;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,74 +33,154 @@ public class AppViewModel extends ViewModel {
     private final Map<String, Map<Integer, List<Question>>> questionsBank =
             MockRepository.getQuestionsBankByTopicAndLevel();
 
-    public void load() {
-        loadTopicsFromFirestore();
+    public interface SaveProgressCallback {
+        void onSuccess();
+        void onFailure(String errorMessage);
     }
 
-    private void loadTopicsFromFirestore() {
+    public void load() {
+        loadTopicsForCurrentUser();
+    }
+
+    private void loadTopicsForCurrentUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            topics.setValue(MockRepository.getTopics());
+            return;
+        }
+
+        String uid = user.getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("topics")
+        List<Topic> defaultTopics = MockRepository.getTopics();
+
+        db.collection("users")
+                .document(uid)
+                .collection("topicProgress")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    List<Topic> loadedTopics = new ArrayList<>();
+                    Map<String, Topic> progressMap = new HashMap<>();
 
-                    if (querySnapshot.isEmpty()) {
-                        loadedTopics = MockRepository.getTopics();
-                        saveTopicsToFirestore(loadedTopics);
-                    } else {
-                        for (var doc : querySnapshot.getDocuments()) {
-                            Topic topic = doc.toObject(Topic.class);
-                            if (topic != null) {
-                                loadedTopics.add(topic);
-                            }
-                        }
+                    for (var doc : querySnapshot.getDocuments()) {
+                        String topicId = doc.getId();
+
+                        Long completedLessonsObj = doc.getLong("completedLessons");
+                        Boolean completedObj = doc.getBoolean("completed");
+
+                        int completedLessons = completedLessonsObj != null
+                                ? completedLessonsObj.intValue()
+                                : 0;
+
+                        boolean completed = completedObj != null && completedObj;
+
+                        Topic progressTopic = new Topic();
+                        progressTopic.id = topicId;
+                        progressTopic.completedLessons = completedLessons;
+                        progressTopic.completed = completed;
+
+                        progressMap.put(topicId, progressTopic);
                     }
 
-                    topics.setValue(loadedTopics);
+                    List<Topic> mergedTopics = new ArrayList<>();
+
+                    for (Topic baseTopic : defaultTopics) {
+                        Topic merged = new Topic(
+                                baseTopic.id,
+                                baseTopic.title,
+                                baseTopic.description,
+                                baseTopic.icon,
+                                false,
+                                0,
+                                10
+                        );
+
+                        if (progressMap.containsKey(baseTopic.id)) {
+                            Topic saved = progressMap.get(baseTopic.id);
+                            merged.completedLessons = saved.completedLessons;
+                            merged.completed = saved.completed;
+                        }
+
+                        merged.totalLessons = 10;
+                        mergedTopics.add(merged);
+                    }
+
+                    topics.setValue(mergedTopics);
+
+                    if (querySnapshot.isEmpty()) {
+                        createInitialTopicProgressForUser(uid, defaultTopics);
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    System.err.println("Error loading topics: " + e.getMessage());
-                    topics.setValue(MockRepository.getTopics());
+                    System.err.println("Error loading user topic progress: " + e.getMessage());
+                    topics.setValue(defaultTopics);
                 });
     }
 
-    private void saveTopicsToFirestore(List<Topic> topicsToSave) {
+    private void createInitialTopicProgressForUser(String uid, List<Topic> defaultTopics) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        for (Topic topic : topicsToSave) {
-            db.collection("topics")
+        for (Topic topic : defaultTopics) {
+            Map<String, Object> progressData = new HashMap<>();
+            progressData.put("completedLessons", 0);
+            progressData.put("completed", false);
+
+            db.collection("users")
+                    .document(uid)
+                    .collection("topicProgress")
                     .document(topic.id)
-                    .set(topic)
+                    .set(progressData)
+                    .addOnSuccessListener(unused ->
+                            System.out.println("Created initial topic progress for topic " + topic.id))
                     .addOnFailureListener(e ->
-                            System.err.println("Error saving topic: " + e.getMessage()));
+                            System.err.println("Error creating initial progress for topic "
+                                    + topic.id + ": " + e.getMessage()));
         }
     }
 
-    public void updateTopicProgress(String topicId, int newCompletedLessons) {
+    public void updateTopicProgress(String topicId, int newCompletedLessons, SaveProgressCallback callback) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            if (callback != null) callback.onFailure("No logged in user.");
+            return;
+        }
+
+        String uid = user.getUid();
+        boolean isCompleted = newCompletedLessons >= 10;
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        db.collection("topics")
-                .document(topicId)
-                .update(
-                        "completedLessons", newCompletedLessons,
-                        "completed", newCompletedLessons >= 10
-                )
-                .addOnFailureListener(e ->
-                        System.err.println("Error updating topic progress: " + e.getMessage()));
+        Map<String, Object> progressData = new HashMap<>();
+        progressData.put("completedLessons", newCompletedLessons);
+        progressData.put("completed", isCompleted);
 
-        // update local list too
-        List<Topic> currentTopics = topics.getValue();
-        if (currentTopics != null) {
-            for (Topic topic : currentTopics) {
-                if (topic.id.equals(topicId)) {
-                    topic.completedLessons = newCompletedLessons;
-                    topic.completed = newCompletedLessons >= 10;
-                    break;
-                }
-            }
-            topics.setValue(currentTopics);
-        }
+        db.collection("users")
+                .document(uid)
+                .collection("topicProgress")
+                .document(topicId)
+                .set(progressData)
+                .addOnSuccessListener(unused -> {
+                    System.out.println("TOPIC PROGRESS SAVED: " + topicId + " -> " + newCompletedLessons);
+
+                    List<Topic> currentTopics = topics.getValue();
+                    if (currentTopics != null) {
+                        for (Topic topic : currentTopics) {
+                            if (topic.id.equals(topicId)) {
+                                topic.completedLessons = newCompletedLessons;
+                                topic.completed = isCompleted;
+                                break;
+                            }
+                        }
+                        topics.setValue(currentTopics);
+                    }
+
+                    if (callback != null) callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("FAILED TO SAVE TOPIC PROGRESS: " + e.getMessage());
+                    if (callback != null) callback.onFailure(e.getMessage());
+                });
     }
 
     public List<Level> getLevelsForSelectedTopic() {
@@ -125,6 +208,10 @@ public class AppViewModel extends ViewModel {
         if (topicQuestions == null) return null;
 
         return topicQuestions.get(level.levelNumber);
+    }
+
+    public void reloadTopicsFromFirestore() {
+        loadTopicsForCurrentUser();
     }
 
     public void resetQuizSessionOnly() {

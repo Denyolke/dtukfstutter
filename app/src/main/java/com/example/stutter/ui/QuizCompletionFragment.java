@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,22 +63,55 @@ public class QuizCompletionFragment extends Fragment {
         Button btnTryAgain = v.findViewById(R.id.btnTryAgain);
 
         btnContinue.setOnClickListener(x -> {
-            if (user != null && level != null) {
-                authManager.updateUserStatsOnQuizCompletion(user.getUid(), level.xpReward);
+            if (level == null) {
+                Toast.makeText(requireContext(), "Level data missing.", Toast.LENGTH_SHORT).show();
+                ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
+                return;
+            }
 
-                if (vm.topics.getValue() != null) {
-                    for (Topic topic : vm.topics.getValue()) {
-                        if (topic.id.equals(level.topicId)) {
-                            int newCompleted = Math.max(topic.completedLessons, level.levelNumber);
-                            vm.updateTopicProgress(level.topicId, newCompleted);
-                            break;
-                        }
+            if (user != null) {
+                authManager.updateUserStatsOnQuizCompletion(user.getUid(), level.xpReward);
+            }
+
+            Topic matchedTopic = null;
+            if (vm.topics.getValue() != null) {
+                for (Topic topic : vm.topics.getValue()) {
+                    if (topic.id.equals(level.topicId)) {
+                        matchedTopic = topic;
+                        break;
                     }
                 }
             }
 
-            vm.resetQuizSessionOnly();
-            ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
+            int newCompleted = level.levelNumber;
+            if (matchedTopic != null) {
+                newCompleted = Math.max(matchedTopic.completedLessons, level.levelNumber);
+            }
+
+            btnContinue.setEnabled(false);
+            btnContinue.setText("Saving...");
+
+            vm.updateTopicProgress(level.topicId, newCompleted, new AppViewModel.SaveProgressCallback() {
+                @Override
+                public void onSuccess() {
+                    if (!isAdded()) return;
+
+                    vm.resetQuizSessionOnly();
+                    ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false);
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    if (!isAdded()) return;
+
+                    btnContinue.setEnabled(true);
+                    btnContinue.setText("Continue to Next Level");
+
+                    Toast.makeText(requireContext(),
+                            "Failed to save progress: " + errorMessage,
+                            Toast.LENGTH_LONG).show();
+                }
+            });
         });
 
         btnTryAgain.setOnClickListener(x -> {
