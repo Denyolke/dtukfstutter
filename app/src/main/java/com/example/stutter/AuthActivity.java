@@ -95,7 +95,7 @@ public class AuthActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(String errorMessage) {
-                    Toast.makeText(AuthActivity.this, "Registration failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AuthActivity.this,  errorMessage, Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(android.view.View.GONE);
                     btnAuth.setEnabled(true);
                 }
