@@ -115,6 +115,13 @@ public class FirebaseAuthManager {
                 });
     }
 
+    public void updateUserProfilePicture(String userId, int pfp, OnAuthListener listener) {
+        mFirestore.collection("users").document(userId)
+                .update("pfp", pfp)
+                .addOnSuccessListener(unused -> listener.onSuccess("Profile picture updated"))
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     /**
      * Update user stats: add XP, update streak, increment completed lessons
      * Called when user completes a quiz successfully

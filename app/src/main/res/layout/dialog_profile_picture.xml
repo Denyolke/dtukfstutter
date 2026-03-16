@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:columnCount="3"
+    android:padding="16dp"
+    android:alignmentMode="alignMargins"
+    android:useDefaultMargins="true">
+
+    <ImageView
+        android:id="@+id/ivPfp1"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/pfp_m1"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/ivPfp2"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/pfp_m2"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/ivPfp3"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/pfp_m3"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/ivPfp4"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/pfp_w1"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/ivPfp5"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/pfp_w2"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/ivPfp6"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/pfp_w3"
+        android:scaleType="centerCrop" />
+
+</GridLayout>
