@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:elevation="3dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <!-- Item icon -->
+        <TextView
+            android:id="@+id/tvShopItemIcon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:text="⚡"
+            android:textSize="24sp"
+            android:background="@drawable/icon_bg_blue"
+            android:layout_marginEnd="14dp"/>
+
+        <!-- Name + description -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvShopItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XP Doubler"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#111827"/>
+
+            <TextView
+                android:id="@+id/tvShopItemDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Doubles XP for your next quiz"
+                android:textSize="12sp"
+                android:textColor="#6B7280"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/tvShopItemOwned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Owned: 0"
+                android:textSize="12sp"
+                android:textColor="#2563EB"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <!-- Buy button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBuyItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🪙 100"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:backgroundTint="#2563EB"
+            app:cornerRadius="20dp"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

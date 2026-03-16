@@ -1,7 +1,7 @@
 package com.example.stutter.ui;
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.stutter.MainActivity;
 import com.example.stutter.R;
 import com.example.stutter.firebase.FirebaseAuthManager;
+import com.example.stutter.model.UserProfile;
 import com.example.stutter.ui.adapter.TopicsAdapter;
 import com.google.firebase.auth.FirebaseUser;
 
 import android.widget.TextView;
-
 
 public class HomeFragment extends Fragment {
 
@@ -33,48 +33,45 @@ public class HomeFragment extends Fragment {
 
         vm = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
-        // Get streak and XP TextViews
         TextView tvStreak = view.findViewById(R.id.tvStreak);
-        TextView tvXP = view.findViewById(R.id.tvXP);
+        TextView tvXP     = view.findViewById(R.id.tvXP);
+        TextView tvCoins  = view.findViewById(R.id.tvCoins);
 
-        // Load user profile from Firestore to get real XP and streak
         FirebaseAuthManager authManager = FirebaseAuthManager.getInstance();
         FirebaseUser user = authManager.getCurrentUser();
 
         if (user != null) {
             authManager.getUserProfile(user.getUid(), new FirebaseAuthManager.OnUserProfileListener() {
                 @Override
-                public void onSuccess(com.example.stutter.model.UserProfile profile) {
-                    // Update UI with real data from Firestore
+                public void onSuccess(UserProfile profile) {
+                    if (!isAdded()) return;
                     tvStreak.setText("🔥 " + profile.streak);
                     tvXP.setText("⭐ " + profile.totalXP);
-                    
-                    // Also update ViewModel
+                    tvCoins.setText("🪙 " + profile.coins);
+
                     vm.streak.setValue(profile.streak);
                     vm.totalXP.setValue(profile.totalXP);
                 }
 
                 @Override
                 public void onError(String errorMessage) {
-                    // If error, show 0
+                    if (!isAdded()) return;
                     tvStreak.setText("🔥 0");
                     tvXP.setText("⭐ 0");
+                    tvCoins.setText("🪙 0");
                 }
             });
         } else {
-            // Not logged in, show 0
             tvStreak.setText("🔥 0");
             tvXP.setText("⭐ 0");
+            tvCoins.setText("🪙 0");
         }
 
-        // Setup RecyclerView
         RecyclerView rv = view.findViewById(R.id.rvTopics);
         rv.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // Observe topics and set adapter
         vm.topics.observe(getViewLifecycleOwner(), topics -> {
             if (topics != null && !topics.isEmpty()) {
-                // Navigate to LEVEL SELECTION instead of quiz
                 rv.setAdapter(new TopicsAdapter(topics, topicId -> {
                     vm.selectedTopicId.setValue(topicId);
                     ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), true);

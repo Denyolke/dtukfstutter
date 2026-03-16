@@ -14,18 +14,27 @@ import com.example.stutter.ui.AppViewModel;
 import com.example.stutter.ui.HomeFragment;
 import com.example.stutter.ui.LeaderboardFragment;
 import com.example.stutter.ui.ProfileFragment;
+import com.example.stutter.ui.QuestsFragment;
+import com.example.stutter.ui.ShopFragment;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppViewModel vm;
 
-    private LinearLayout btnSettingsContainer;
+    // Nav containers
+    private LinearLayout btnLeaderboardContainer;
+    private LinearLayout btnShopContainer;
     private LinearLayout btnHomeContainer;
+    private LinearLayout btnQuestsContainer;
     private LinearLayout btnProfileContainer;
 
-    private ImageView ivLeaderboard, ivHome, ivProfile;
-    private TextView tvLeaderboardLabel, tvHomeLabel, tvProfileLabel;
+    // Nav icons
+    private ImageView ivLeaderboard, ivShop, ivHome, ivQuests, ivProfile;
+
+    // Nav labels
+    private TextView tvLeaderboardLabel, tvShopLabel, tvHomeLabel,
+                     tvQuestsLabel, tvProfileLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,89 +53,119 @@ public class MainActivity extends AppCompatActivity {
         vm = new ViewModelProvider(this).get(AppViewModel.class);
         vm.load();
 
-        btnSettingsContainer = findViewById(R.id.btnSettingsContainer);
-        btnHomeContainer = findViewById(R.id.btnHomeContainer);
-        btnProfileContainer = findViewById(R.id.btnProfileContainer);
+        // Bind containers
+        btnLeaderboardContainer = findViewById(R.id.btnLeaderboardContainer);
+        btnShopContainer        = findViewById(R.id.btnShopContainer);
+        btnHomeContainer        = findViewById(R.id.btnHomeContainer);
+        btnQuestsContainer      = findViewById(R.id.btnQuestsContainer);
+        btnProfileContainer     = findViewById(R.id.btnProfileContainer);
 
+        // Bind icons
         ivLeaderboard = findViewById(R.id.ivLeaderboard);
-        ivHome = findViewById(R.id.ivHome);
-        ivProfile = findViewById(R.id.ivProfile);
+        ivShop        = findViewById(R.id.ivShop);
+        ivHome        = findViewById(R.id.ivHome);
+        ivQuests      = findViewById(R.id.ivQuests);
+        ivProfile     = findViewById(R.id.ivProfile);
 
+        // Bind labels
         tvLeaderboardLabel = findViewById(R.id.tvLeaderboardLabel);
-        tvHomeLabel = findViewById(R.id.tvHomeLabel);
-        tvProfileLabel = findViewById(R.id.tvProfileLabel);
+        tvShopLabel        = findViewById(R.id.tvShopLabel);
+        tvHomeLabel        = findViewById(R.id.tvHomeLabel);
+        tvQuestsLabel      = findViewById(R.id.tvQuestsLabel);
+        tvProfileLabel     = findViewById(R.id.tvProfileLabel);
 
-        btnSettingsContainer.setOnClickListener(v -> {
-            setSelectedTab(Tab.LEADERBOARD);
-            replace(new LeaderboardFragment(), false);
-        });
-
-        btnHomeContainer.setOnClickListener(v -> {
-            setSelectedTab(Tab.HOME);
-            replace(new HomeFragment(), false);
-        });
-
-        btnProfileContainer.setOnClickListener(v -> {
-            setSelectedTab(Tab.PROFILE);
-            replace(new ProfileFragment(), false);
-        });
+        // Click listeners
+        btnLeaderboardContainer.setOnClickListener(v -> navigateTo(Tab.LEADERBOARD));
+        btnShopContainer.setOnClickListener(v        -> navigateTo(Tab.SHOP));
+        btnHomeContainer.setOnClickListener(v        -> navigateTo(Tab.HOME));
+        btnQuestsContainer.setOnClickListener(v      -> navigateTo(Tab.QUESTS));
+        btnProfileContainer.setOnClickListener(v     -> navigateTo(Tab.PROFILE));
 
         if (savedInstanceState == null) {
-            setSelectedTab(Tab.HOME);
-            replace(new HomeFragment(), false);
+            navigateTo(Tab.HOME);
+        }
+    }
+
+    private void navigateTo(Tab tab) {
+        setSelectedTab(tab);
+        switch (tab) {
+            case LEADERBOARD: replace(new LeaderboardFragment(), false); break;
+            case SHOP:        replace(new ShopFragment(),        false); break;
+            case HOME:        replace(new HomeFragment(),        false); break;
+            case QUESTS:      replace(new QuestsFragment(),      false); break;
+            case PROFILE:     replace(new ProfileFragment(),     false); break;
         }
     }
 
     public void replace(Fragment f, boolean addToBackStack) {
         if (f == null) return;
-
         var tx = getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, f);
-
         if (addToBackStack) tx.addToBackStack(null);
         tx.commit();
     }
 
-    private enum Tab {
-        LEADERBOARD, HOME, PROFILE
-    }
+    // ── Tab highlight ─────────────────────────────────────────────────────────
 
-    private void setSelectedTab(Tab selectedTab) {
+    private enum Tab { LEADERBOARD, SHOP, HOME, QUESTS, PROFILE }
+
+    private void setSelectedTab(Tab selected) {
         resetAllTabs();
 
-        switch (selectedTab) {
+        LinearLayout activeContainer;
+        ImageView    activeIcon;
+        TextView     activeLabel;
+
+        switch (selected) {
             case LEADERBOARD:
-                btnSettingsContainer.setBackgroundResource(R.drawable.nav_item_active_bg);
-                ivLeaderboard.setColorFilter(0xFF2563EB);
-                tvLeaderboardLabel.setTextColor(0xFF2563EB);
+                activeContainer = btnLeaderboardContainer;
+                activeIcon      = ivLeaderboard;
+                activeLabel     = tvLeaderboardLabel;
                 break;
-
-            case HOME:
-                btnHomeContainer.setBackgroundResource(R.drawable.nav_item_active_bg);
-                ivHome.setColorFilter(0xFF2563EB);
-                tvHomeLabel.setTextColor(0xFF2563EB);
+            case SHOP:
+                activeContainer = btnShopContainer;
+                activeIcon      = ivShop;
+                activeLabel     = tvShopLabel;
                 break;
-
+            case QUESTS:
+                activeContainer = btnQuestsContainer;
+                activeIcon      = ivQuests;
+                activeLabel     = tvQuestsLabel;
+                break;
             case PROFILE:
-                btnProfileContainer.setBackgroundResource(R.drawable.nav_item_active_bg);
-                ivProfile.setColorFilter(0xFF2563EB);
-                tvProfileLabel.setTextColor(0xFF2563EB);
+                activeContainer = btnProfileContainer;
+                activeIcon      = ivProfile;
+                activeLabel     = tvProfileLabel;
+                break;
+            default: // HOME
+                activeContainer = btnHomeContainer;
+                activeIcon      = ivHome;
+                activeLabel     = tvHomeLabel;
                 break;
         }
+
+        activeContainer.setBackgroundResource(R.drawable.nav_item_active_bg);
+        activeIcon.setColorFilter(0xFF2563EB);
+        activeLabel.setTextColor(0xFF2563EB);
     }
 
     private void resetAllTabs() {
-        btnSettingsContainer.setBackgroundResource(R.drawable.nav_item_inactive_bg);
-        btnHomeContainer.setBackgroundResource(R.drawable.nav_item_inactive_bg);
-        btnProfileContainer.setBackgroundResource(R.drawable.nav_item_inactive_bg);
+        LinearLayout[] containers = {
+            btnLeaderboardContainer, btnShopContainer,
+            btnHomeContainer, btnQuestsContainer, btnProfileContainer
+        };
+        ImageView[] icons = { ivLeaderboard, ivShop, ivHome, ivQuests, ivProfile };
+        TextView[]  labels = {
+            tvLeaderboardLabel, tvShopLabel,
+            tvHomeLabel, tvQuestsLabel, tvProfileLabel
+        };
 
-        ivLeaderboard.setColorFilter(0xFF9CA3AF);
-        ivHome.setColorFilter(0xFF9CA3AF);
-        ivProfile.setColorFilter(0xFF9CA3AF);
-
-        tvLeaderboardLabel.setTextColor(0xFF9CA3AF);
-        tvHomeLabel.setTextColor(0xFF9CA3AF);
-        tvProfileLabel.setTextColor(0xFF9CA3AF);
+        for (LinearLayout c : containers)
+            c.setBackgroundResource(R.drawable.nav_item_inactive_bg);
+        for (ImageView i : icons)
+            i.setColorFilter(0xFF9CA3AF);
+        for (TextView t : labels)
+            t.setTextColor(0xFF9CA3AF);
     }
 }

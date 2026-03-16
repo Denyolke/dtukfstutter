@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -15,55 +15,91 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Bottom navigation: Leaderboard | Shop | Home | Quests | Profile -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
-        android:layout_height="84dp"
+        android:layout_height="72dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@android:color/white"
         android:elevation="10dp"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="10dp"
+        android:paddingHorizontal="6dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <!-- Leaderboard -->
         <LinearLayout
-            android:id="@+id/btnSettingsContainer"
+            android:id="@+id/btnLeaderboardContainer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="6dp"
             android:background="@drawable/nav_item_inactive_bg"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
                 android:id="@+id/ivLeaderboard"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/ic_trophy"
                 android:tint="#9CA3AF"
                 android:contentDescription="Leaderboard"
-                tools:ignore="UseAppTint" />
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:id="@+id/tvLeaderboardLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Leaderboard"
-                android:textSize="11sp"
+                android:text="Ranks"
+                android:textSize="10sp"
                 android:textColor="#9CA3AF"
                 android:textStyle="bold"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="3dp"/>
+
         </LinearLayout>
 
-        <!-- Home -->
+        <!-- Shop — drop your downloaded PNG as res/drawable/ic_shop.png -->
+        <LinearLayout
+            android:id="@+id/btnShopContainer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="6dp"
+            android:background="@drawable/nav_item_inactive_bg"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/ivShop"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_shop"
+                android:tint="#9CA3AF"
+                android:contentDescription="Shop"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/tvShopLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shop"
+                android:textSize="10sp"
+                android:textColor="#9CA3AF"
+                android:textStyle="bold"
+                android:layout_marginTop="3dp"/>
+
+        </LinearLayout>
+
+        <!-- Home (centre) -->
         <LinearLayout
             android:id="@+id/btnHomeContainer"
             android:layout_width="0dp"
@@ -71,30 +107,64 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp"
-            android:layout_marginHorizontal="8dp"
+            android:padding="6dp"
             android:background="@drawable/nav_item_active_bg"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
                 android:id="@+id/ivHome"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/ic_house"
                 android:tint="#2563EB"
                 android:contentDescription="Home"
-                tools:ignore="UseAppTint" />
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:id="@+id/tvHomeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Home"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textColor="#2563EB"
                 android:textStyle="bold"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="3dp"/>
+
+        </LinearLayout>
+
+        <!-- Quests — drop your downloaded PNG as res/drawable/ic_quests.png -->
+        <LinearLayout
+            android:id="@+id/btnQuestsContainer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="6dp"
+            android:background="@drawable/nav_item_inactive_bg"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/ivQuests"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_quests"
+                android:tint="#9CA3AF"
+                android:contentDescription="Quests"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/tvQuestsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quests"
+                android:textSize="10sp"
+                android:textColor="#9CA3AF"
+                android:textStyle="bold"
+                android:layout_marginTop="3dp"/>
+
         </LinearLayout>
 
         <!-- Profile -->
@@ -105,28 +175,30 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="8dp"
+            android:padding="6dp"
             android:background="@drawable/nav_item_inactive_bg"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
                 android:id="@+id/ivProfile"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/ic_user"
                 android:tint="#9CA3AF"
-                android:contentDescription="Profile" />
+                android:contentDescription="Profile"
+                android:scaleType="fitCenter"/>
 
             <TextView
                 android:id="@+id/tvProfileLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"
-                android:textSize="11sp"
+                android:textSize="10sp"
                 android:textColor="#9CA3AF"
                 android:textStyle="bold"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="3dp"/>
+
         </LinearLayout>
 
     </LinearLayout>

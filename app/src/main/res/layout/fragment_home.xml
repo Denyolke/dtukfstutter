@@ -29,17 +29,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <!-- Stats row: streak | XP | coins -->
         <LinearLayout
             android:id="@+id/statsRow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginStart="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
+            <!-- Streak pill -->
             <TextView
                 android:id="@+id/tvStreak"
                 android:layout_width="wrap_content"
@@ -51,17 +52,32 @@
                 android:textColor="#C2410C"
                 android:text="🔥 0"/>
 
+            <!-- XP pill -->
             <TextView
                 android:id="@+id/tvXP"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/pill_yellow"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
                 android:textStyle="bold"
                 android:textColor="#A16207"
                 android:text="⭐ 0"/>
+
+            <!-- Coins pill -->
+            <TextView
+                android:id="@+id/tvCoins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/pill_green"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:textStyle="bold"
+                android:textColor="#065F46"
+                android:text="🪙 0"/>
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
