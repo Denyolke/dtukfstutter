@@ -1,11 +1,15 @@
 package com.example.stutter.ui.adapter;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.util.TypedValue;
 import android.view.*;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.stutter.R;
+
 import java.util.List;
 
 public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
@@ -15,24 +19,19 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
     }
 
     private final List<String> options;
-    private int selected = -1;
-    private int correctAnswer = -1;
+    private int selected        = -1;
+    private int correctAnswer   = -1;
     private int incorrectAnswer = -1;
-    private boolean locked = false;
+    private boolean locked      = false;
     private final OnSelect onSelect;
 
     public OptionsAdapter(List<String> options, OnSelect onSelect) {
-        this.options = options;
+        this.options  = options;
         this.onSelect = onSelect;
     }
 
-    public void lock() { 
-        locked = true; 
-    }
-
-    public int getSelected() { 
-        return selected; 
-    }
+    public void lock()            { locked = true; }
+    public int  getSelected()     { return selected; }
 
     public void markCorrect(int correctIdx) {
         this.correctAnswer = correctIdx;
@@ -41,7 +40,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
 
     public void markIncorrect(int incorrectIdx, int correctIdx) {
         this.incorrectAnswer = incorrectIdx;
-        this.correctAnswer = correctIdx;
+        this.correctAnswer   = correctIdx;
         notifyDataSetChanged();
     }
 
@@ -49,7 +48,7 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
     @Override
     public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_option, parent, false);
         return new VH(v);
     }
 
@@ -57,24 +56,21 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
     public void onBindViewHolder(@NonNull VH h, int position) {
         h.tv.setText(options.get(position));
 
-        // Determine background color based on state
-        int bgColor = 0xFFFAFAFA; // Default light gray
-        int textColor = Color.BLACK;
+        Context ctx = h.itemView.getContext();
+
+        // Resolve theme-aware surface color for the default state
+        int bgColor   = resolveAttr(ctx, R.attr.appCard);
+        int textColor = resolveAttr(ctx, R.attr.appTextPrimary);
 
         if (correctAnswer == position) {
-            // Correct answer - green
-            bgColor = 0xFFD1FAE5; // Light green
-            textColor = 0xFF065F46; // Dark green text
+            bgColor   = 0xFFD1FAE5; // light green — same in both themes, readable
+            textColor = 0xFF065F46;
         } else if (incorrectAnswer == position) {
-            // Wrong answer - red
-            bgColor = 0xFFFEE2E2; // Light red
-            textColor = 0xFF7F1D1D; // Dark red text
-        } else if (selected == position && locked) {
-            // Selected but waiting to show result
-            bgColor = 0xFFE0F2FE; // Light blue
-        } else if (selected == position && !locked) {
-            // Selected and not locked
-            bgColor = 0xFFBFDBFE; // Slightly darker blue
+            bgColor   = 0xFFFEE2E2; // light red
+            textColor = 0xFF7F1D1D;
+        } else if (selected == position) {
+            bgColor   = 0xFF1D4ED8; // blue selection
+            textColor = 0xFFFFFFFF;
         }
 
         h.itemView.setBackgroundColor(bgColor);
@@ -89,16 +85,20 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
     }
 
     @Override
-    public int getItemCount() { 
-        return options.size(); 
+    public int getItemCount() { return options.size(); }
+
+    /** Resolve a theme color attribute to its actual color int. */
+    private static int resolveAttr(Context ctx, int attr) {
+        TypedValue tv = new TypedValue();
+        ctx.getTheme().resolveAttribute(attr, tv, true);
+        return tv.data;
     }
 
     static class VH extends RecyclerView.ViewHolder {
         TextView tv;
-
         VH(View v) {
             super(v);
-            tv = v.findViewById(android.R.id.text1);
+            tv = v.findViewById(R.id.tvOptionText);
         }
     }
 }

@@ -3,114 +3,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_gradient_blue">
+    android:background="?attr/appBackground">
 
     <!-- Header -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        android:background="@android:color/white"
-        android:elevation="4dp">
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:padding="16dp" android:background="?attr/appHeader" android:elevation="4dp">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Daily Quests"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="#1F2937"/>
-
-            <TextView
-                android:id="@+id/tvQuestDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Today"
-                android:textSize="13sp"
-                android:textColor="#6B7280"
-                android:layout_marginTop="2dp"/>
-
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:orientation="vertical">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Daily Quests" android:textSize="22sp" android:textStyle="bold"
+                android:textColor="?attr/appTextPrimary"/>
+            <TextView android:id="@+id/tvQuestDate"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Today" android:textSize="13sp"
+                android:textColor="?attr/appTextSecondary" android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Coin balance pill -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
             android:background="@drawable/pill_yellow"
-            android:paddingHorizontal="14dp"
-            android:paddingVertical="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🪙 "
-                android:textSize="16sp"/>
-
-            <TextView
-                android:id="@+id/tvCoinBalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#A16207"/>
-
+            android:paddingHorizontal="14dp" android:paddingVertical="8dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="🪙 " android:textSize="16sp"/>
+            <TextView android:id="@+id/tvCoinBalance"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="0" android:textSize="16sp" android:textStyle="bold"
+                android:textColor="@color/accent_yellow_text"/>
         </LinearLayout>
-
     </LinearLayout>
 
-    <!-- Refresh hint -->
+    <!-- Hint bar -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="✨ New quests unlock every day at midnight"
-        android:textSize="12sp"
-        android:textColor="#6B7280"
-        android:gravity="center"
-        android:paddingVertical="10dp"
-        android:background="#EFF6FF"/>
+        android:textSize="12sp" android:textColor="?attr/appTextSecondary"
+        android:gravity="center" android:paddingVertical="10dp"
+        android:background="?attr/appSurfaceVariant"/>
 
-    <!-- Loading indicator -->
-    <ProgressBar
-        android:id="@+id/pbQuestsLoading"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="32dp"
+    <ProgressBar android:id="@+id/pbQuestsLoading"
+        android:layout_width="40dp" android:layout_height="40dp"
+        android:layout_gravity="center_horizontal" android:layout_marginTop="32dp"
         android:visibility="visible"/>
 
-    <!-- Quest list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvQuests"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvQuests"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:clipToPadding="false"
+        android:paddingHorizontal="16dp" android:paddingTop="16dp" android:paddingBottom="16dp"
         android:visibility="gone"/>
 
-    <!-- Error / empty state -->
-    <TextView
-        android:id="@+id/tvQuestsError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="14sp"
-        android:textColor="#6B7280"
-        android:gravity="center"
-        android:padding="32dp"
-        android:visibility="gone"/>
+    <TextView android:id="@+id/tvQuestsError"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="" android:textSize="14sp" android:textColor="?attr/appTextSecondary"
+        android:gravity="center" android:padding="32dp" android:visibility="gone"/>
 
 </LinearLayout>

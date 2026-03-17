@@ -18,6 +18,19 @@ public class QuestsAdapter extends RecyclerView.Adapter<QuestsAdapter.VH> {
 
     private final List<DailyQuest> quests;
 
+    private static String iconFor(String type) {
+        if (type == null) return "🎯";
+        switch (type) {
+            case "COMPLETE_QUIZZES": return "📝";
+            case "PERFECT_SCORE":   return "⭐";
+            case "EARN_XP":         return "🚀";
+            case "CORRECT_ANSWERS": return "✅";
+            case "COMPLETE_TOPIC":  return "🎓";
+            case "LOGIN_STREAK":    return "🔥";
+            default:                return "🎯";
+        }
+    }
+
     public QuestsAdapter(List<DailyQuest> quests) {
         this.quests = quests;
     }
@@ -32,28 +45,27 @@ public class QuestsAdapter extends RecyclerView.Adapter<QuestsAdapter.VH> {
 
     @Override
     public void onBindViewHolder(@NonNull VH h, int position) {
-        DailyQuest q = quests.get(position);
+        DailyQuest quest = quests.get(position);
 
-        h.tvTitle.setText(q.title);
-        h.tvDesc.setText(q.description);
-        h.tvReward.setText("🪙 +" + q.rewardCoins);
+        h.tvIcon.setText(iconFor(quest.type));
+        h.tvTitle.setText(quest.title);
+        h.tvDesc.setText(quest.description);
+        h.tvReward.setText("+" + quest.rewardCoins);
 
-        int progress = q.target > 0
-                ? (int) ((q.progress * 100f) / q.target)
-                : 0;
+        int percent = quest.target > 0
+                ? (int) ((quest.progress * 100f) / quest.target) : 0;
+        h.progressBar.setProgress(percent);
+        h.tvProgress.setText(quest.progress + " / " + quest.target);
 
-        h.progressBar.setProgress(Math.min(progress, 100));
-        h.tvProgress.setText(q.progress + " / " + q.target);
-
-        if (q.completed) {
-            h.tvStatus.setText("✅ Completed");
-            h.tvStatus.setTextColor(0xFF10B981);
-            h.itemView.setAlpha(0.7f);
+        if (quest.completed) {
+            h.tvCompleted.setVisibility(View.VISIBLE);
+            h.progressBar.setProgress(100);
+            h.tvProgress.setText(quest.target + " / " + quest.target);
         } else {
-            h.tvStatus.setText("In Progress");
-            h.tvStatus.setTextColor(0xFF6B7280);
-            h.itemView.setAlpha(1f);
+            h.tvCompleted.setVisibility(View.GONE);
         }
+
+        h.itemView.setAlpha(quest.completed ? 0.7f : 1f);
     }
 
     @Override
@@ -62,16 +74,18 @@ public class QuestsAdapter extends RecyclerView.Adapter<QuestsAdapter.VH> {
     }
 
     static class VH extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDesc, tvReward, tvProgress, tvStatus;
+        // IDs must match item_quest.xml exactly
+        TextView tvIcon, tvTitle, tvDesc, tvReward, tvProgress, tvCompleted;
         LinearProgressIndicator progressBar;
 
         VH(@NonNull View itemView) {
             super(itemView);
+            tvIcon      = itemView.findViewById(R.id.tvQuestIcon);
             tvTitle     = itemView.findViewById(R.id.tvQuestTitle);
             tvDesc      = itemView.findViewById(R.id.tvQuestDesc);
             tvReward    = itemView.findViewById(R.id.tvQuestReward);
             tvProgress  = itemView.findViewById(R.id.tvQuestProgress);
-            tvStatus    = itemView.findViewById(R.id.tvQuestStatus);
+            tvCompleted = itemView.findViewById(R.id.tvQuestCompleted);  // ← was tvQuestStatus
             progressBar = itemView.findViewById(R.id.questProgress);
         }
     }

@@ -1,5 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand -->
+    <color name="brand_blue">#2563EB</color>
+    <color name="brand_blue_dark">#1d5dea</color>
+
+    <!-- Light theme surfaces -->
+    <color name="light_background">#EFF6FF</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface_variant">#F9FAFB</color>
+    <color name="light_card">#FFFFFF</color>
+    <color name="light_nav">#FFFFFF</color>
+    <color name="light_header">#FFFFFF</color>
+    <color name="light_divider">#F3F4F6</color>
+
+    <!-- Dark theme surfaces — dark grey, NOT black -->
+    <color name="dark_background">#12121C</color>
+    <color name="dark_surface">#1E1E2E</color>
+    <color name="dark_surface_variant">#252535</color>
+    <color name="dark_card">#2A2A3C</color>
+    <color name="dark_nav">#1A1A2A</color>
+    <color name="dark_header">#1A1A2A</color>
+    <color name="dark_divider">#2E2E40</color>
+
+    <!-- Text — light theme -->
+    <color name="light_text_primary">#111827</color>
+    <color name="light_text_secondary">#6B7280</color>
+    <color name="light_text_hint">#9CA3AF</color>
+
+    <!-- Text — dark theme -->
+    <color name="dark_text_primary">#E8E8F0</color>
+    <color name="dark_text_secondary">#9B9BB0</color>
+    <color name="dark_text_hint">#6B6B80</color>
+
+    <!-- Accent colors (same in both themes) -->
+    <color name="accent_orange_bg">#FFEDD5</color>
+    <color name="accent_orange_text">#C2410C</color>
+    <color name="accent_yellow_bg">#FEF9C3</color>
+    <color name="accent_yellow_text">#A16207</color>
+    <color name="accent_green_bg">#D1FAE5</color>
+    <color name="accent_green_text">#065F46</color>
+    <color name="accent_green">#10B981</color>
+    <color name="accent_red">#DC2626</color>
+    <color name="accent_amber">#F59E0B</color>
+
+    <!-- Nav inactive -->
+    <color name="nav_inactive">#9CA3AF</color>
+
 </resources>

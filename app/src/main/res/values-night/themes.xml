@@ -1,7 +1,32 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Stutter" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Stutter" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Material required -->
+        <item name="colorPrimary">@color/brand_blue</item>
+        <item name="colorPrimaryVariant">@color/brand_blue_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/brand_blue</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <!-- App surfaces — dark grey tones -->
+        <item name="appBackground">@color/dark_background</item>
+        <item name="appSurface">@color/dark_surface</item>
+        <item name="appSurfaceVariant">@color/dark_surface_variant</item>
+        <item name="appCard">@color/dark_card</item>
+        <item name="appNav">@color/dark_nav</item>
+        <item name="appHeader">@color/dark_header</item>
+        <item name="appDivider">@color/dark_divider</item>
+
+        <!-- Text -->
+        <item name="appTextPrimary">@color/dark_text_primary</item>
+        <item name="appTextSecondary">@color/dark_text_secondary</item>
+        <item name="appTextHint">@color/dark_text_hint</item>
+
+        <!-- Switch tint -->
+        <item name="colorControlActivated">@color/brand_blue</item>
+
     </style>
+
 </resources>

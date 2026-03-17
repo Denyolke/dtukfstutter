@@ -21,7 +21,6 @@ public class FirebaseAuthManager {
     public static final int COINS_PER_QUIZ  = 10;
     public static final int XP_DOUBLER_COST = 100;
 
-    // CET timezone — all streak dates use this
     private static final TimeZone CET = TimeZone.getTimeZone("Europe/Paris");
 
     private FirebaseAuthManager() {
@@ -74,7 +73,6 @@ public class FirebaseAuthManager {
         profile.xpBoosterCount          = 0;
         profile.activeXpMultiplier      = 1.0;
         profile.lastQuestDate           = "";
-        // Mark today as covered so the first quiz starts streak = 1
         profile.lastCoveredDate         = todayStringCET();
 
         mFirestore.collection("users").document(userId)
@@ -104,22 +102,16 @@ public class FirebaseAuthManager {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    // ── Quiz completion: XP + streak + coins ─────────────────────────────────
+    /** Update the username field in Firestore. */
+    public void updateUsername(String userId, String newUsername, OnAuthListener listener) {
+        mFirestore.collection("users").document(userId)
+                .update("username", newUsername)
+                .addOnSuccessListener(u -> listener.onSuccess("Username updated"))
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
 
-    /**
-     * Streak rules (all dates in CET):
-     *
-     *  lastCoveredDate == today
-     *      → Already completed a quiz today. Streak unchanged.
-     *
-     *  lastCoveredDate == yesterday
-     *      → Active yesterday, active again today → streak + 1
-     *
-     *  lastCoveredDate is older OR empty (new account)
-     *      → Missed at least one midnight → streak resets to 1
-     *
-     * lastCoveredDate is always updated to today after any quiz.
-     */
+    // ── Quiz completion ───────────────────────────────────────────────────────
+
     public void updateUserStatsOnQuizCompletion(String userId, int baseXpToAdd,
                                                 OnCoinsUpdateListener listener) {
         mFirestore.collection("users").document(userId).get()
@@ -138,16 +130,12 @@ public class FirebaseAuthManager {
                     String today     = todayStringCET();
                     String yesterday = yesterdayStringCET();
 
-                    // Streak decision
                     int newStreak;
                     if (today.equals(lastCovered)) {
-                        // Already covered today — no change
                         newStreak = Math.max(currentStreak, 1);
                     } else if (yesterday.equals(lastCovered)) {
-                        // Covered yesterday, completing today → extend streak
                         newStreak = currentStreak + 1;
                     } else {
-                        // Gap detected — reset
                         newStreak = 1;
                     }
 
@@ -166,8 +154,7 @@ public class FirebaseAuthManager {
                                     "activeXpMultiplier", 1.0
                             )
                             .addOnSuccessListener(u -> {
-                                if (listener != null)
-                                    listener.onSuccess(newCoins, coinsEarned);
+                                if (listener != null) listener.onSuccess(newCoins, coinsEarned);
                             })
                             .addOnFailureListener(e -> {
                                 if (listener != null) listener.onError(e.getMessage());
@@ -175,7 +162,6 @@ public class FirebaseAuthManager {
                 });
     }
 
-    /** Backward-compatible overload. */
     public void updateUserStatsOnQuizCompletion(String userId, int xpToAdd) {
         updateUserStatsOnQuizCompletion(userId, xpToAdd, null);
     }
@@ -206,10 +192,7 @@ public class FirebaseAuthManager {
                 .addOnSuccessListener(doc -> {
                     if (!doc.exists()) { listener.onError("Profile not found"); return; }
                     int booster = safeInt(doc, "xpBoosterCount");
-                    if (booster <= 0) {
-                        listener.onError("No XP Doublers available!");
-                        return;
-                    }
+                    if (booster <= 0) { listener.onError("No XP Doublers available!"); return; }
                     mFirestore.collection("users").document(userId)
                             .update("xpBoosterCount",     booster - 1,
                                     "activeXpMultiplier", 2.0)
@@ -255,16 +238,14 @@ public class FirebaseAuthManager {
         return sdf.format(date);
     }
 
-    // ── Null-safe Firestore helpers ──────────────────────────────────────────
+    // ── Null-safe helpers ────────────────────────────────────────────────────
 
     private static int safeInt(DocumentSnapshot doc, String field) {
-        Long v = doc.getLong(field);
-        return v != null ? v.intValue() : 0;
+        Long v = doc.getLong(field); return v != null ? v.intValue() : 0;
     }
 
     private static String safeStr(DocumentSnapshot doc, String field) {
-        String v = doc.getString(field);
-        return v != null ? v : "";
+        String v = doc.getString(field); return v != null ? v : "";
     }
 
     // ── Interfaces ───────────────────────────────────────────────────────────

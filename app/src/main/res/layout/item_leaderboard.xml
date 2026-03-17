@@ -1,70 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="2dp">
+    android:layout_marginBottom="8dp"
+    android:elevation="2dp"
+    app:cardCornerRadius="14dp"
+    app:cardBackgroundColor="?attr/appCard">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="@android:color/white"
-        android:gravity="center_vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:padding="16dp" android:gravity="center_vertical">
 
-        <!-- Rank with medal -->
-        <TextView
-            android:id="@+id/tvRank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🥇"
-            android:textSize="28sp"
-            android:layout_marginEnd="16dp" />
+        <TextView android:id="@+id/tvRank"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="1." android:textSize="20sp" android:textStyle="bold"
+            android:textColor="?attr/appTextPrimary" android:layout_marginEnd="16dp"/>
 
-        <!-- Username -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+        <TextView android:id="@+id/tvUsername"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="Player" android:textSize="15sp"
+            android:textStyle="bold" android:textColor="?attr/appTextPrimary"/>
 
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Player Name"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#1F2937" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="⭐ " android:textSize="18sp"/>
 
-        </LinearLayout>
-
-        <!-- XP -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⭐ "
-                android:textSize="20sp"
-                android:layout_marginEnd="4dp" />
-
-            <TextView
-                android:id="@+id/tvXP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 XP"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#F59E0B" />
-
-        </LinearLayout>
+        <TextView android:id="@+id/tvXP"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="0 XP" android:textSize="15sp" android:textStyle="bold"
+            android:textColor="@color/accent_amber"/>
 
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

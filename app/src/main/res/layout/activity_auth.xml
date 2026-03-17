@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
     android:gravity="center"
-    android:background="@drawable/bg_gradient_blue">
+    android:background="?attr/appBackground">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,59 +14,74 @@
         android:text="Stutter"
         android:textSize="40sp"
         android:textStyle="bold"
-        android:textColor="#2563EB"
-        android:layout_marginBottom="32dp" />
+        android:textColor="@color/brand_blue"
+        android:layout_marginBottom="8dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Learn Informatics, Master Your Skills"
         android:textSize="14sp"
-        android:textColor="#6B7280"
-        android:layout_marginBottom="40dp" />
+        android:textColor="?attr/appTextSecondary"
+        android:layout_marginBottom="40dp"/>
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="16dp"
-        android:textColor="#111827"
-        android:textColorHint="#9CA3AF"
+        android:textColor="?attr/appTextPrimary"
+        android:textColorHint="?attr/appTextHint"
         android:background="@drawable/input_rounded_white"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="12dp"/>
 
+    <!-- Only visible during registration -->
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:hint="Username"
         android:paddingHorizontal="16dp"
-        android:textColor="#111827"
-        android:textColorHint="#9CA3AF"
+        android:textColor="?attr/appTextPrimary"
+        android:textColorHint="?attr/appTextHint"
         android:background="@drawable/input_rounded_white"
         android:layout_marginBottom="12dp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="52dp"
         android:hint="Password"
         android:inputType="textPassword"
         android:paddingHorizontal="16dp"
-        android:textColor="#111827"
-        android:textColorHint="#9CA3AF"
+        android:textColor="?attr/appTextPrimary"
+        android:textColorHint="?attr/appTextHint"
         android:background="@drawable/input_rounded_white"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Only visible during registration -->
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:paddingHorizontal="16dp"
+        android:textColor="?attr/appTextPrimary"
+        android:textColorHint="?attr/appTextHint"
+        android:background="@drawable/input_rounded_white"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:visibility="gone"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnAuth"
@@ -78,17 +93,16 @@
         android:textStyle="bold"
         android:textSize="16sp"
         android:layout_marginBottom="16dp"
-        app:backgroundTint="#1d5dea"
-        app:cornerRadius="268dp" />
+        app:backgroundTint="@color/brand_blue"
+        app:cornerRadius="26dp"/>
 
     <TextView
         android:id="@+id/tvToggleMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Don't have an account? Register here"
-        android:textColor="#2563EB"
+        android:textColor="@color/brand_blue"
         android:textStyle="bold"
-        android:textSize="12sp"
-        android:layout_gravity="center" />
+        android:textSize="13sp"/>
 
 </LinearLayout>

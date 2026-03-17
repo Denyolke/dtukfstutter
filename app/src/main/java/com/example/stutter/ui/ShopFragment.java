@@ -2,7 +2,8 @@ package com.example.stutter.ui;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,9 +14,22 @@ import androidx.fragment.app.Fragment;
 import com.example.stutter.R;
 import com.example.stutter.firebase.FirebaseAuthManager;
 import com.example.stutter.model.UserProfile;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ShopFragment extends Fragment {
+
+    // IDs match fragment_shop.xml exactly
+    private TextView       tvCoins;         // R.id.tvShopCoins
+    private TextView       tvBoosterOwned;  // R.id.tvBoosterOwned
+    private LinearLayout   bannerBooster;   // R.id.bannerActiveBooster
+    private MaterialButton btnBuy;          // R.id.btnBuyDoubler
+    private MaterialButton btnUse;          // R.id.btnUseDoubler
+    private ProgressBar    pbLoading;       // R.id.pbShopLoading
+    private View           scrollShop;      // R.id.scrollShop
+
+    private FirebaseAuthManager authManager;
+    private String uid;
 
     public ShopFragment() {
         super(R.layout.fragment_shop);
@@ -25,69 +39,105 @@ public class ShopFragment extends Fragment {
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
 
-        FirebaseAuthManager authManager = FirebaseAuthManager.getInstance();
+        tvCoins       = v.findViewById(R.id.tvShopCoins);
+        tvBoosterOwned = v.findViewById(R.id.tvBoosterOwned);
+        bannerBooster  = v.findViewById(R.id.bannerActiveBooster);
+        btnBuy         = v.findViewById(R.id.btnBuyDoubler);
+        btnUse         = v.findViewById(R.id.btnUseDoubler);
+        pbLoading      = v.findViewById(R.id.pbShopLoading);
+        scrollShop     = v.findViewById(R.id.scrollShop);
+
+        authManager = FirebaseAuthManager.getInstance();
         FirebaseUser user = authManager.getCurrentUser();
 
-        if (user == null) return;
+        if (user == null) {
+            pbLoading.setVisibility(View.GONE);
+            Toast.makeText(requireContext(), "Please log in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        TextView tvCoins          = v.findViewById(R.id.tvCoins);
-        TextView tvBoosterCount   = v.findViewById(R.id.tvBoosterCount);
-        TextView tvBoosterStatus  = v.findViewById(R.id.tvBoosterStatus);
-        Button   btnBuy           = v.findViewById(R.id.btnBuyDoubler);
-        Button   btnActivate      = v.findViewById(R.id.btnActivateDoubler);
+        uid = user.getUid();
+        loadProfile();
 
-        // Load fresh data from Firestore
-        loadProfile(user.getUid(), authManager, tvCoins, tvBoosterCount, tvBoosterStatus);
+        btnBuy.setOnClickListener(x -> handleBuy());
+        btnUse.setOnClickListener(x -> handleActivate());
+    }
 
-        // ── Buy XP Doubler ──────────────────────────────────────────────────
-        btnBuy.setOnClickListener(x -> {
-            btnBuy.setEnabled(false);
-            authManager.buyXpDoubler(user.getUid(), new FirebaseAuthManager.OnAuthListener() {
-                @Override public void onSuccess(String msg) {
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-                    loadProfile(user.getUid(), authManager,
-                            tvCoins, tvBoosterCount, tvBoosterStatus);
-                    btnBuy.setEnabled(true);
-                }
-                @Override public void onError(String err) {
-                    Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show();
-                    btnBuy.setEnabled(true);
-                }
-            });
-        });
+    // ── Load profile ─────────────────────────────────────────────────────────
 
-        // ── Activate XP Doubler ─────────────────────────────────────────────
-        btnActivate.setOnClickListener(x -> {
-            btnActivate.setEnabled(false);
-            authManager.activateXpDoubler(user.getUid(), new FirebaseAuthManager.OnAuthListener() {
-                @Override public void onSuccess(String msg) {
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-                    loadProfile(user.getUid(), authManager,
-                            tvCoins, tvBoosterCount, tvBoosterStatus);
-                    btnActivate.setEnabled(true);
-                }
-                @Override public void onError(String err) {
-                    Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show();
-                    btnActivate.setEnabled(true);
-                }
-            });
+    private void loadProfile() {
+        pbLoading.setVisibility(View.VISIBLE);
+        scrollShop.setVisibility(View.GONE);
+
+        authManager.getUserProfile(uid, new FirebaseAuthManager.OnUserProfileListener() {
+            @Override
+            public void onSuccess(UserProfile profile) {
+                if (!isAdded()) return;
+                pbLoading.setVisibility(View.GONE);
+                scrollShop.setVisibility(View.VISIBLE);
+                bindProfile(profile);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                if (!isAdded()) return;
+                pbLoading.setVisibility(View.GONE);
+                Toast.makeText(requireContext(),
+                        "Error loading shop: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void loadProfile(String uid, FirebaseAuthManager auth,
-                             TextView tvCoins, TextView tvBoosterCount,
-                             TextView tvBoosterStatus) {
-        auth.getUserProfile(uid, new FirebaseAuthManager.OnUserProfileListener() {
-            @Override public void onSuccess(UserProfile p) {
-                tvCoins.setText("🪙 " + p.coins + " Coins");
-                tvBoosterCount.setText("x" + p.xpBoosterCount);
-                boolean active = p.activeXpMultiplier > 1.0;
-                tvBoosterStatus.setText(active ? "⚡ Active — next quiz XP is doubled!" : "Inactive");
-                tvBoosterStatus.setTextColor(active ? 0xFF10B981 : 0xFF6B7280);
+    private void bindProfile(UserProfile profile) {
+        tvCoins.setText(String.valueOf(profile.coins));
+        tvBoosterOwned.setText("Owned: " + profile.xpBoosterCount);
+
+        boolean boosterActive = profile.activeXpMultiplier >= 2.0;
+        bannerBooster.setVisibility(boosterActive ? View.VISIBLE : View.GONE);
+
+        btnUse.setEnabled(profile.xpBoosterCount > 0 && !boosterActive);
+        btnUse.setAlpha(btnUse.isEnabled() ? 1f : 0.5f);
+    }
+
+    // ── Buy ───────────────────────────────────────────────────────────────────
+
+    private void handleBuy() {
+        btnBuy.setEnabled(false);
+        authManager.buyXpDoubler(uid, new FirebaseAuthManager.OnAuthListener() {
+            @Override
+            public void onSuccess(String message) {
+                if (!isAdded()) return;
+                btnBuy.setEnabled(true);
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                loadProfile();
             }
-            @Override public void onError(String err) {
-                Toast.makeText(requireContext(),
-                        "Failed to load shop: " + err, Toast.LENGTH_SHORT).show();
+
+            @Override
+            public void onError(String errorMessage) {
+                if (!isAdded()) return;
+                btnBuy.setEnabled(true);
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    // ── Activate ──────────────────────────────────────────────────────────────
+
+    private void handleActivate() {
+        btnUse.setEnabled(false);
+        authManager.activateXpDoubler(uid, new FirebaseAuthManager.OnAuthListener() {
+            @Override
+            public void onSuccess(String message) {
+                if (!isAdded()) return;
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
+                loadProfile();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                if (!isAdded()) return;
+                btnUse.setEnabled(true);
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }

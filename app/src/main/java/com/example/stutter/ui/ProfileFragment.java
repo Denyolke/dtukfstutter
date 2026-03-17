@@ -2,8 +2,11 @@ package com.example.stutter.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +38,7 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(v, savedInstanceState);
 
         authManager = FirebaseAuthManager.getInstance();
-        user = authManager.getCurrentUser();
+        user        = authManager.getCurrentUser();
         AppViewModel vm = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
 
         if (user == null) {
@@ -44,21 +47,27 @@ public class ProfileFragment extends Fragment {
         }
 
         ivProfilePicture = v.findViewById(R.id.ivProfilePicture);
-        TextView tvUsername = v.findViewById(R.id.tvUsername);
-        TextView tvEmail = v.findViewById(R.id.tvEmail);
-        TextView tvTotalXP = v.findViewById(R.id.tvTotalXP);
-        TextView tvStreak = v.findViewById(R.id.tvStreak);
-        TextView tvLessonsCompleted = v.findViewById(R.id.tvLessonsCompleted);
-        TextView tvCoursesCompleted = v.findViewById(R.id.tvCoursesCompleted);
-        Button btnLogout = v.findViewById(R.id.btnLogout);
-        ProgressBar progressBar = v.findViewById(R.id.progressBar);
+        TextView    tvUsername         = v.findViewById(R.id.tvUsername);
+        TextView    tvEmail            = v.findViewById(R.id.tvEmail);
+        TextView    tvTotalXP          = v.findViewById(R.id.tvTotalXP);
+        TextView    tvStreak           = v.findViewById(R.id.tvStreak);
+        TextView    tvLessonsCompleted = v.findViewById(R.id.tvLessonsCompleted);
+        TextView    tvCoursesCompleted = v.findViewById(R.id.tvCoursesCompleted);
+        ProgressBar progressBar        = v.findViewById(R.id.progressBar);
+        View        btnLogout          = v.findViewById(R.id.btnLogout);
+        View        btnOpenSettings    = v.findViewById(R.id.btnOpenSettings);
 
+        // ── Settings button ───────────────────────────────────────────────────
+        btnOpenSettings.setOnClickListener(x ->
+                ((MainActivity) requireActivity()).replace(new SettingsFragment(), true));
+
+        // ── Load profile ──────────────────────────────────────────────────────
         progressBar.setVisibility(View.VISIBLE);
 
-        String userId = user.getUid();
-        authManager.getUserProfile(userId, new FirebaseAuthManager.OnUserProfileListener() {
+        authManager.getUserProfile(user.getUid(), new FirebaseAuthManager.OnUserProfileListener() {
             @Override
             public void onSuccess(UserProfile profile) {
+                if (!isAdded()) return;
                 progressBar.setVisibility(View.GONE);
 
                 tvUsername.setText(profile.username);
@@ -73,94 +82,52 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onError(String errorMessage) {
+                if (!isAdded()) return;
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(requireContext(), "Error loading profile: " + errorMessage, Toast.LENGTH_SHORT).show();
-                tvEmail.setText("Email: " + user.getEmail());
+                Toast.makeText(requireContext(),
+                        "Error loading profile: " + errorMessage, Toast.LENGTH_SHORT).show();
+                tvEmail.setText(user.getEmail());
                 ivProfilePicture.setImageResource(getPfpDrawable(1));
             }
         });
 
-        ivProfilePicture.setOnClickListener(view -> showProfilePictureDialog());
-
+        // ── Courses completed (from topics LiveData) ──────────────────────────
         vm.topics.observe(getViewLifecycleOwner(), topics -> {
-            int completedCourses = 0;
-
+            int completed = 0;
             if (topics != null) {
-                for (Topic topic : topics) {
-                    if (topic.completed || topic.completedLessons >= 10) {
-                        completedCourses++;
-                    }
+                for (Topic t : topics) {
+                    if (t.completed || t.completedLessons >= 10) completed++;
                 }
             }
-
-            tvCoursesCompleted.setText("Courses Completed: " + completedCourses);
+            tvCoursesCompleted.setText("Courses Completed: " + completed);
         });
 
-        btnLogout.setOnClickListener(v1 -> {
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Yes, Logout", (dialog, which) -> {
-                        authManager.logout();
-                        Toast.makeText(requireContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
-
-                        Intent intent = new Intent(requireActivity(), AuthActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        requireActivity().finish();
-                    })
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                    .show();
-        });
-    }
-
-    private void showProfilePictureDialog() {
-        View dialogView = LayoutInflater.from(requireContext())
-                .inflate(R.layout.dialog_profile_picture, null);
-
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle("Choose Profile Picture")
-                .setView(dialogView)
-                .setNegativeButton("Cancel", (d, which) -> d.dismiss())
-                .create();
-
-        dialogView.findViewById(R.id.ivPfp1).setOnClickListener(v -> savePfp(1, dialog));
-        dialogView.findViewById(R.id.ivPfp2).setOnClickListener(v -> savePfp(2, dialog));
-        dialogView.findViewById(R.id.ivPfp3).setOnClickListener(v -> savePfp(3, dialog));
-        dialogView.findViewById(R.id.ivPfp4).setOnClickListener(v -> savePfp(4, dialog));
-        dialogView.findViewById(R.id.ivPfp5).setOnClickListener(v -> savePfp(5, dialog));
-        dialogView.findViewById(R.id.ivPfp6).setOnClickListener(v -> savePfp(6, dialog));
-
-        dialog.show();
-    }
-
-    private void savePfp(int pfp, AlertDialog dialog) {
-        if (user == null) return;
-
-        authManager.updateUserProfilePicture(user.getUid(), pfp, new FirebaseAuthManager.OnAuthListener() {
-            @Override
-            public void onSuccess(String message) {
-                currentPfp = pfp;
-                ivProfilePicture.setImageResource(getPfpDrawable(pfp));
-                Toast.makeText(requireContext(), "Profile picture updated", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                Toast.makeText(requireContext(), "Failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-        });
+        // ── Logout ────────────────────────────────────────────────────────────
+        btnLogout.setOnClickListener(x ->
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Logout")
+                        .setMessage("Are you sure you want to logout?")
+                        .setPositiveButton("Yes, Logout", (d, w) -> {
+                            authManager.logout();
+                            Toast.makeText(requireContext(),
+                                    "Logged out successfully", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(requireActivity(), AuthActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            requireActivity().finish();
+                        })
+                        .setNegativeButton("Cancel", (d, w) -> d.dismiss())
+                        .show());
     }
 
     private int getPfpDrawable(int pfp) {
         switch (pfp) {
-            case 1: return R.drawable.pfp_m1;
-            case 2: return R.drawable.pfp_m2;
-            case 3: return R.drawable.pfp_m3;
-            case 4: return R.drawable.pfp_w1;
-            case 5: return R.drawable.pfp_w2;
-            case 6: return R.drawable.pfp_w3;
+            case 1:  return R.drawable.pfp_m1;
+            case 2:  return R.drawable.pfp_m2;
+            case 3:  return R.drawable.pfp_m3;
+            case 4:  return R.drawable.pfp_w1;
+            case 5:  return R.drawable.pfp_w2;
+            case 6:  return R.drawable.pfp_w3;
             default: return R.drawable.pfp_m1;
         }
     }
