@@ -35,6 +35,7 @@ public class GameOverFragment extends Fragment {
         TextView tvScoreLabel = v.findViewById(R.id.tvScoreLabel);
         TextView tvMessage = v.findViewById(R.id.tvMessage);
 
+
         tvTitle.setText("Out of Hearts! ❌");
 
         if (score != null && totalQuestions != null) {

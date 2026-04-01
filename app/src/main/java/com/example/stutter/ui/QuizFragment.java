@@ -64,7 +64,9 @@ public class QuizFragment extends Fragment {
         btnBack.setOnClickListener(x ->
                 ((MainActivity) requireActivity()).replace(new LevelSelectionFragment(), false));
 
-        if (btnAddHeart != null) {
+       /*
+       DEVELOPER TESTER FEATURE REMOVED
+       if (btnAddHeart != null) {
             btnAddHeart.setOnClickListener(x -> {
                 hearts++;
                 tvHearts.setText(getHeartsDisplay());
@@ -80,7 +82,7 @@ public class QuizFragment extends Fragment {
                 }
                 return false;
             });
-        }
+        }*/
 
         btn.setOnClickListener(x -> {
             OptionsAdapter ad = (OptionsAdapter) rv.getAdapter();

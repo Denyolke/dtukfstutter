@@ -40,7 +40,7 @@ public class ResultFragment extends Fragment {
         Button btnHome = v.findViewById(R.id.btnHome);
         if (btnHome != null) {
             btnHome.setOnClickListener(x -> {
-                //vm.resetAllQuizState();
+                //vm.resetAllQuizState(); -remade quizstate detection
                 ((MainActivity) requireActivity())
                         .replace(new HomeFragment(), false);
             });

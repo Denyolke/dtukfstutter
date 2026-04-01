@@ -57,11 +57,11 @@ public class ProfileFragment extends Fragment {
         View        btnLogout          = v.findViewById(R.id.btnLogout);
         View        btnOpenSettings    = v.findViewById(R.id.btnOpenSettings);
 
-        // ── Settings button ───────────────────────────────────────────────────
+        //Settings button
         btnOpenSettings.setOnClickListener(x ->
                 ((MainActivity) requireActivity()).replace(new SettingsFragment(), true));
 
-        // ── Load profile ──────────────────────────────────────────────────────
+        //Load profile
         progressBar.setVisibility(View.VISIBLE);
 
         authManager.getUserProfile(user.getUid(), new FirebaseAuthManager.OnUserProfileListener() {
@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // ── Courses completed (from topics LiveData) ──────────────────────────
+        //Courses completed
         vm.topics.observe(getViewLifecycleOwner(), topics -> {
             int completed = 0;
             if (topics != null) {
@@ -102,7 +102,7 @@ public class ProfileFragment extends Fragment {
             tvCoursesCompleted.setText("Courses Completed: " + completed);
         });
 
-        // ── Logout ────────────────────────────────────────────────────────────
+        //Logout
         btnLogout.setOnClickListener(x ->
                 new AlertDialog.Builder(requireContext())
                         .setTitle("Logout")
@@ -120,6 +120,7 @@ public class ProfileFragment extends Fragment {
                         .show());
     }
 
+    //Profile Pictures
     private int getPfpDrawable(int pfp) {
         switch (pfp) {
             case 1:  return R.drawable.pfp_m1;

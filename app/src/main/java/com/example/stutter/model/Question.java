@@ -8,7 +8,7 @@ public class Question {
     public int correctAnswer;
     public String explanation;
 
-    public Question() {} // Firebase-ready
+    public Question() {}
 
     public Question(String question, List<String> options, int correctAnswer, String explanation) {
         this.question = question;

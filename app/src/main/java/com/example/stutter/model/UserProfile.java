@@ -14,10 +14,9 @@ public class UserProfile {
     public int coins;
     public int xpBoosterCount;
     public double activeXpMultiplier;
-    public String lastQuestDate;      // "yyyy-MM-dd" — gates daily quest generation
+    public String lastQuestDate;
 
     // Streak — the CET date string of the last day a quiz was completed ("yyyy-MM-dd")
-    // This replaces the old timestamp-based approach entirely.
     public String lastCoveredDate;
 
     public UserProfile() {}

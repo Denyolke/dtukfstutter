@@ -79,7 +79,6 @@ public class LevelSelectionFragment extends Fragment {
                 }
             }));
         });
-
         btnBack.setOnClickListener(v ->
                 ((MainActivity) requireActivity()).replace(new HomeFragment(), false));
     }

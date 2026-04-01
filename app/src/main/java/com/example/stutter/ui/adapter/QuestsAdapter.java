@@ -74,7 +74,6 @@ public class QuestsAdapter extends RecyclerView.Adapter<QuestsAdapter.VH> {
     }
 
     static class VH extends RecyclerView.ViewHolder {
-        // IDs must match item_quest.xml exactly
         TextView tvIcon, tvTitle, tvDesc, tvReward, tvProgress, tvCompleted;
         LinearProgressIndicator progressBar;
 

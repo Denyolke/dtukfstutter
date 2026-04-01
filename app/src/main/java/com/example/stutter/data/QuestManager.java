@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public class QuestManager {
 
-    // ── Quest pool ────────────────────────────────────────────────────────────
+    //Quests manager
 
     public static List<DailyQuest> buildQuestPool(String dateKey) {
         List<DailyQuest> pool = new ArrayList<>();
@@ -44,13 +44,13 @@ public class QuestManager {
         return pool;
     }
 
-    // ── Date helper ───────────────────────────────────────────────────────────
+
 
     public static String todayKey() {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 
-    // ── Pick 2 random quests ──────────────────────────────────────────────────
+
 
     public static List<DailyQuest> pickTwoRandom(String dateKey) {
         List<DailyQuest> pool = buildQuestPool(dateKey);
@@ -58,7 +58,7 @@ public class QuestManager {
         return new ArrayList<>(pool.subList(0, 2));
     }
 
-    // ── Interfaces ────────────────────────────────────────────────────────────
+
 
     public interface OnQuestsLoadedListener {
         void onLoaded(List<DailyQuest> quests);
@@ -70,7 +70,7 @@ public class QuestManager {
         void onError(String error);
     }
 
-    // ── Firestore: load or generate ───────────────────────────────────────────
+    //Firestore: Load or generate
 
     public static void loadOrGenerateDailyQuests(String uid, OnQuestsLoadedListener listener) {
         String today = todayKey();
@@ -99,8 +99,7 @@ public class QuestManager {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    // ── Firestore: increment progress ─────────────────────────────────────────
-
+    //Firestore: Increment progress
     public static void incrementQuestProgress(String uid, String questType, int amount,
                                               OnQuestProgressListener listener) {
         String today = todayKey();
@@ -134,7 +133,7 @@ public class QuestManager {
                 });
     }
 
-    // ── Firestore: save helper ────────────────────────────────────────────────
+    //Firestore: Save helper
 
     private interface SaveCallback {
         void onSaved();

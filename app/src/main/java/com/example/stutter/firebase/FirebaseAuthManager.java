@@ -33,10 +33,9 @@ public class FirebaseAuthManager {
         return instance;
     }
 
-    // ── Auth ─────────────────────────────────────────────────────────────────
+    //Auth
 
-    public void registerUser(String email, String password, String username,
-                             OnAuthListener listener) {
+    public void registerUser(String email, String password, String username, OnAuthListener listener) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -44,8 +43,7 @@ public class FirebaseAuthManager {
                         if (user != null)
                             createUserProfile(user.getUid(), email, username, listener);
                     } else {
-                        listener.onError(task.getException() != null
-                                ? task.getException().getMessage() : "Registration failed");
+                        listener.onError(task.getException() != null ? task.getException().getMessage() : "Registration failed");
                     }
                 });
     }
@@ -63,10 +61,9 @@ public class FirebaseAuthManager {
     public FirebaseUser getCurrentUser() { return mAuth.getCurrentUser(); }
     public boolean isUserLoggedIn()      { return mAuth.getCurrentUser() != null; }
 
-    // ── Profile ──────────────────────────────────────────────────────────────
+    //Profile
 
-    private void createUserProfile(String userId, String email, String username,
-                                   OnAuthListener listener) {
+    private void createUserProfile(String userId, String email, String username, OnAuthListener listener) {
         UserProfile profile             = new UserProfile(userId, username, email, 0, 0, 0);
         profile.lastActivityDate        = System.currentTimeMillis();
         profile.coins                   = 0;
@@ -102,7 +99,7 @@ public class FirebaseAuthManager {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    /** Update the username field in Firestore. */
+
     public void updateUsername(String userId, String newUsername, OnAuthListener listener) {
         mFirestore.collection("users").document(userId)
                 .update("username", newUsername)
@@ -110,7 +107,7 @@ public class FirebaseAuthManager {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
-    // ── Quiz completion ───────────────────────────────────────────────────────
+    //Quiz completion
 
     public void updateUserStatsOnQuizCompletion(String userId, int baseXpToAdd,
                                                 OnCoinsUpdateListener listener) {
@@ -166,7 +163,7 @@ public class FirebaseAuthManager {
         updateUserStatsOnQuizCompletion(userId, xpToAdd, null);
     }
 
-    // ── Economy ──────────────────────────────────────────────────────────────
+
 
     public void buyXpDoubler(String userId, OnAuthListener listener) {
         mFirestore.collection("users").document(userId).get()
@@ -220,7 +217,6 @@ public class FirebaseAuthManager {
                 });
     }
 
-    // ── CET date helpers ─────────────────────────────────────────────────────
 
     public static String todayStringCET() {
         return formatDateCET(new Date());
@@ -238,7 +234,7 @@ public class FirebaseAuthManager {
         return sdf.format(date);
     }
 
-    // ── Null-safe helpers ────────────────────────────────────────────────────
+    //HELPERS
 
     private static int safeInt(DocumentSnapshot doc, String field) {
         Long v = doc.getLong(field); return v != null ? v.intValue() : 0;
@@ -248,7 +244,7 @@ public class FirebaseAuthManager {
         String v = doc.getString(field); return v != null ? v : "";
     }
 
-    // ── Interfaces ───────────────────────────────────────────────────────────
+
 
     public interface OnAuthListener {
         void onSuccess(String message);

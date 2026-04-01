@@ -31,9 +31,6 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     @Override
     public void onBindViewHolder(@NonNull VH h, int position) {
         UserProfile user = users.get(position);
-        
-       /* String medals[] = {"🥇", "🥈", "🥉"};
-        String medal = position < 3 ? medals[position] : (position + 1) + ".";*/
 
         String medal = (position + 1) + ".";
         

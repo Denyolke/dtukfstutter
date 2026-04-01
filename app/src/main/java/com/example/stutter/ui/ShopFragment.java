@@ -63,8 +63,6 @@ public class ShopFragment extends Fragment {
         btnUse.setOnClickListener(x -> handleActivate());
     }
 
-    // ── Load profile ─────────────────────────────────────────────────────────
-
     private void loadProfile() {
         pbLoading.setVisibility(View.VISIBLE);
         scrollShop.setVisibility(View.GONE);
@@ -99,7 +97,7 @@ public class ShopFragment extends Fragment {
         btnUse.setAlpha(btnUse.isEnabled() ? 1f : 0.5f);
     }
 
-    // ── Buy ───────────────────────────────────────────────────────────────────
+    //Handle Power-Ups
 
     private void handleBuy() {
         btnBuy.setEnabled(false);
@@ -121,7 +119,6 @@ public class ShopFragment extends Fragment {
         });
     }
 
-    // ── Activate ──────────────────────────────────────────────────────────────
 
     private void handleActivate() {
         btnUse.setEnabled(false);

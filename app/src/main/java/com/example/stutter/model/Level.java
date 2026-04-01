@@ -5,13 +5,13 @@ public class Level {
     public String topicId;
     public int levelNumber;
     public String title;
-    public int questionsCount; // 8-10 questions
+    public int questionsCount;
     public boolean completed;
-    public int xpReward; // 15 XP per level
+    public int xpReward;
     public String difficulty;
 
     public Level() {
-        // Empty constructor for Firestore
+
     }
 
     public Level(String id, String topicId, int levelNumber, String title, 

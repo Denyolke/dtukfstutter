@@ -39,11 +39,11 @@ public class SettingsFragment extends Fragment {
         android.widget.TextView tvCurrentUsername = v.findViewById(R.id.tvCurrentUsername);
         SwitchMaterial switchDark       = v.findViewById(R.id.switchDarkMode);
 
-        // ── Back ─────────────────────────────────────────────────────────────
+
         btnBack.setOnClickListener(x ->
                 ((MainActivity) requireActivity()).replace(new ProfileFragment(), false));
 
-        // ── Set current username label ────────────────────────────────────────
+        //Set current username label
         if (user != null) {
             authManager.getUserProfile(user.getUid(), new FirebaseAuthManager.OnUserProfileListener() {
                 @Override
@@ -57,21 +57,18 @@ public class SettingsFragment extends Fragment {
             });
         }
 
-        // ── Dark mode switch ──────────────────────────────────────────────────
+        //Profile changers
         switchDark.setChecked(ThemeManager.isDarkMode(requireContext()));
         switchDark.setOnCheckedChangeListener((btn, isChecked) -> {
             ThemeManager.setDarkMode(requireContext(), isChecked);
-            // AppCompatDelegate recreates the activity automatically
+
         });
 
-        // ── Change profile picture ────────────────────────────────────────────
         rowPfp.setOnClickListener(x -> showProfilePictureDialog(authManager, user));
-
-        // ── Change username ───────────────────────────────────────────────────
         rowUsername.setOnClickListener(x -> showChangeUsernameDialog(authManager, user, tvCurrentUsername));
     }
 
-    // ── Profile picture dialog (reuses existing dialog layout) ───────────────
+
 
     private void showProfilePictureDialog(FirebaseAuthManager authManager, FirebaseUser user) {
         if (user == null) return;
@@ -114,8 +111,7 @@ public class SettingsFragment extends Fragment {
         dialog.show();
     }
 
-    // ── Change username dialog ────────────────────────────────────────────────
-
+    //Change username dialog
     private void showChangeUsernameDialog(FirebaseAuthManager authManager,
                                           FirebaseUser user,
                                           android.widget.TextView tvCurrentUsername) {

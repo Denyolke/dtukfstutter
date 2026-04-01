@@ -134,7 +134,7 @@ public class AppViewModel extends ViewModel {
                             System.out.println("Created initial topic progress for topic " + topic.id))
                     .addOnFailureListener(e ->
                             System.err.println("Error creating initial progress for topic "
-                                    + topic.id + ": " + e.getMessage()));
+                                    + topic.id + ":" + e.getMessage()));
         }
     }
 

@@ -51,7 +51,7 @@ public class AuthActivity extends AppCompatActivity {
         tvToggleMode.setOnClickListener(v -> toggleAuthMode());
     }
 
-    // ── Authentication ────────────────────────────────────────────────────────
+    //Authentication
 
     private void authenticate() {
         String email    = etEmail.getText().toString().trim();
@@ -121,7 +121,7 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
-    // ── Toggle login / register ───────────────────────────────────────────────
+    //Toggle login / register
 
     private void toggleAuthMode() {
         isLoginMode = !isLoginMode;
@@ -138,8 +138,6 @@ public class AuthActivity extends AppCompatActivity {
             tvToggleMode.setText("Already have an account? Login here");
         }
     }
-
-    // ── Loading state ─────────────────────────────────────────────────────────
 
     private void setLoading(boolean loading) {
         progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);

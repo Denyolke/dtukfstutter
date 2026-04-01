@@ -30,8 +30,8 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
         this.onSelect = onSelect;
     }
 
-    public void lock()            { locked = true; }
-    public int  getSelected()     { return selected; }
+    public void lock()        { locked = true; }
+    public int getSelected()  { return selected; }
 
     public void markCorrect(int correctIdx) {
         this.correctAnswer = correctIdx;
@@ -56,21 +56,44 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
     public void onBindViewHolder(@NonNull VH h, int position) {
         h.tv.setText(options.get(position));
 
-        Context ctx = h.itemView.getContext();
+        Context ctx       = h.itemView.getContext();
+        boolean isDark    = isDarkTheme(ctx);
 
-        // Resolve theme-aware surface color for the default state
+        // Default state — use theme card color
         int bgColor   = resolveAttr(ctx, R.attr.appCard);
         int textColor = resolveAttr(ctx, R.attr.appTextPrimary);
 
+        //Selected (before checking)
+        if (selected == position && correctAnswer == -1 && incorrectAnswer == -1) {
+            if (isDark) {
+                bgColor   = 0xFF3B5BDB;
+                textColor = 0xFFFFFFFF;
+            } else {
+                bgColor   = 0xFFBFDBFE;
+                textColor = 0xFF1E3A8A;
+            }
+        }
+
+
         if (correctAnswer == position) {
-            bgColor   = 0xFFD1FAE5; // light green — same in both themes, readable
-            textColor = 0xFF065F46;
-        } else if (incorrectAnswer == position) {
-            bgColor   = 0xFFFEE2E2; // light red
-            textColor = 0xFF7F1D1D;
-        } else if (selected == position) {
-            bgColor   = 0xFF1D4ED8; // blue selection
-            textColor = 0xFFFFFFFF;
+            if (isDark) {
+                bgColor   = 0xFF166534; // deep green
+                textColor = 0xFF86EFAC; // light green
+            } else {
+                bgColor   = 0xFFD1FAE5; // light green
+                textColor = 0xFF065F46;
+            }
+        }
+
+
+        if (incorrectAnswer == position) {
+            if (isDark) {
+                bgColor   = 0xFF7F1D1D; // deep red
+                textColor = 0xFFFCA5A5; // light red
+            } else {
+                bgColor   = 0xFFFEE2E2; // light red
+                textColor = 0xFF7F1D1D;
+            }
         }
 
         h.itemView.setBackgroundColor(bgColor);
@@ -87,7 +110,14 @@ public class OptionsAdapter extends RecyclerView.Adapter<OptionsAdapter.VH> {
     @Override
     public int getItemCount() { return options.size(); }
 
-    /** Resolve a theme color attribute to its actual color int. */
+
+    private static boolean isDarkTheme(Context ctx) {
+        int nightMode = ctx.getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+    }
+
+
     private static int resolveAttr(Context ctx, int attr) {
         TypedValue tv = new TypedValue();
         ctx.getTheme().resolveAttribute(attr, tv, true);

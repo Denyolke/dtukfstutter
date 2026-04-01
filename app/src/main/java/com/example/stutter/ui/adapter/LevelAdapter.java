@@ -46,7 +46,6 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.VH> {
 
         h.itemView.setAlpha(locked ? 0.5f : 1f);
         h.itemView.setEnabled(!locked);
-
         h.itemView.setOnClickListener(v -> {
             if (!locked) onLevelClick.onClick(level);
         });

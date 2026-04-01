@@ -9,7 +9,7 @@ public class Topic {
     public int completedLessons;
     public int totalLessons;
 
-    public Topic() {} // needed for Firebase later
+    public Topic() {}
 
     public Topic(String id, String title, String description, String icon,
                  boolean completed, int completedLessons, int totalLessons) {

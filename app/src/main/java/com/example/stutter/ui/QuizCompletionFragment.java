@@ -45,7 +45,7 @@ public class QuizCompletionFragment extends Fragment {
         final boolean isPerfect  = finalScore == finalTotal && finalTotal > 0;
         final int xpEarned       = level != null ? level.xpReward : 15;
 
-        // ── Bind views ───────────────────────────────────────────────────────
+        //Bind views
         TextView tvScore   = v.findViewById(R.id.tvScore);
         TextView tvMessage = v.findViewById(R.id.tvMessage);
         TextView tvXP      = v.findViewById(R.id.tvXP);
@@ -56,17 +56,17 @@ public class QuizCompletionFragment extends Fragment {
         tvXP.setText("+" + xpEarned + " XP Earned!");
 
         if (isPerfect) {
-            tvMessage.setText("🎉 Perfect Score!");
+            tvMessage.setText("Perfect Score!");
             tvMessage.setTextColor(0xFF4CAF50);
         } else if (finalScore >= (finalTotal * 0.67)) {
-            tvMessage.setText("Great job! 🌟");
+            tvMessage.setText("Great job!");
             tvMessage.setTextColor(0xFF2196F3);
         } else {
             tvMessage.setText("Good effort!");
             tvMessage.setTextColor(0xFF1F2937);
         }
 
-        // ── Award XP + coins + streak ────────────────────────────────────────
+        //Award XP + coins + streak
         if (user != null) {
             authManager.updateUserStatsOnQuizCompletion(
                     user.getUid(),
@@ -83,7 +83,7 @@ public class QuizCompletionFragment extends Fragment {
                         public void onError(String error) { /* silent */ }
                     });
 
-            // Quest progress
+            //Quest progress
             QuestManager.incrementQuestProgress(
                     user.getUid(), "COMPLETE_QUIZZES", 1, makeQuestListener());
             QuestManager.incrementQuestProgress(
@@ -96,7 +96,7 @@ public class QuizCompletionFragment extends Fragment {
             }
         }
 
-        // ── Continue ─────────────────────────────────────────────────────────
+        //Continue button
         btnContinue.setOnClickListener(x -> {
             if (level == null) {
                 Toast.makeText(requireContext(), "Level data missing.", Toast.LENGTH_SHORT).show();
@@ -148,7 +148,7 @@ public class QuizCompletionFragment extends Fragment {
             });
         });
 
-        // ── Try Again ─────────────────────────────────────────────────────────
+        //Try Again
         btnTryAgain.setOnClickListener(x -> {
             vm.resetQuizSessionOnly();
             vm.selectedLevel.setValue(level);
@@ -156,8 +156,7 @@ public class QuizCompletionFragment extends Fragment {
         });
     }
 
-    // ── Quest listener helper ─────────────────────────────────────────────────
-
+    //Quest listener helper
     private QuestManager.OnQuestProgressListener makeQuestListener() {
         return new QuestManager.OnQuestProgressListener() {
             @Override
@@ -176,12 +175,12 @@ public class QuizCompletionFragment extends Fragment {
                                         Toast.LENGTH_LONG).show();
                             }
                             @Override
-                            public void onError(String errorMessage) { /* silent */ }
+                            public void onError(String errorMessage) {}
                         });
             }
 
             @Override
-            public void onError(String error) { /* silent */ }
+            public void onError(String error) {}
         };
     }
 }

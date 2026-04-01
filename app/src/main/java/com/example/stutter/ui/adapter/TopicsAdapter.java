@@ -33,34 +33,30 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.VH> {
         return new VH(v);
     }
 
+    //Progress calculation
     @Override
     public void onBindViewHolder(@NonNull VH h, int position) {
         Topic t = topics.get(position);
 
-        // A topic is locked if the previous topic is not completed
         boolean locked = position > 0 && !topics.get(position - 1).completed;
 
-        // Show completion badge or icon
         h.tvIcon.setText(t.completed ? "✅" : t.icon);
         h.tvTitle.setText(t.title);
         h.tvDesc.setText(t.description);
 
-        // Calculate progress percentage based on LEVELS (10 total)
-        // Each topic has 10 levels
+
         int totalLevels = 10;
-        int completedLevels = t.completedLessons; // This represents completed levels
+        int completedLevels = t.completedLessons;
         
         int progressPercent = (completedLevels * 100) / totalLevels;
         h.progress.setProgress(progressPercent);
 
-        // Display "X/10 levels completed" (changed from "lessons" to "levels")
         h.tvLessons.setText(completedLevels + "/" + totalLevels + " levels completed");
 
-        // Show lock icon if locked
+
         h.tvLock.setVisibility(locked ? View.VISIBLE : View.GONE);
         h.itemView.setAlpha(locked ? 0.6f : 1f);
 
-        // Set click listener only if not locked
         h.itemView.setOnClickListener(v -> {
             if (!locked) {
                 onTopicClick.onClick(t.id);

@@ -56,7 +56,7 @@ public class QuestsFragment extends Fragment {
             return;
         }
 
-        // Load coin balance
+        //Coin Balance
         authManager.getUserProfile(user.getUid(), new FirebaseAuthManager.OnUserProfileListener() {
             @Override
             public void onSuccess(UserProfile profile) {
@@ -66,7 +66,7 @@ public class QuestsFragment extends Fragment {
             public void onError(String errorMessage) { /* silent */ }
         });
 
-        // Load / generate today's quests
+        // Load / generate quests
         QuestManager.loadOrGenerateDailyQuests(user.getUid(), new QuestManager.OnQuestsLoadedListener() {
             @Override
             public void onLoaded(List<DailyQuest> quests) {

@@ -97,7 +97,7 @@ public class LeaderboardFragment extends Fragment {
                     
                     // Display current user rank
                     if (currentUserRank > 0) {
-                        tvCurrentUser.setText("Your Rank: #" + currentUserRank + " with " + currentUserXP + " XP");
+                        tvCurrentUser.setText("#" + currentUserRank + " with " + currentUserXP + " XP");
                     } else {
                         // Current user not in top 10
                         tvCurrentUser.setText("You're outside top 10 - keep playing!");

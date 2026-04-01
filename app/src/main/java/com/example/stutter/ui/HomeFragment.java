@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
         FirebaseAuthManager authManager = FirebaseAuthManager.getInstance();
         FirebaseUser user = authManager.getCurrentUser();
 
+        //Trackables
         if (user != null) {
             authManager.getUserProfile(user.getUid(), new FirebaseAuthManager.OnUserProfileListener() {
                 @Override
