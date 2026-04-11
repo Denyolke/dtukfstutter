@@ -153,25 +153,6 @@ users/
 
 ---
 
-## 📝 Obsah kvízov
-
-Momentálne obsahuje plnú sadu otázok pre tému **Dátové štruktúry** (10 úrovní × 10 otázok):
-
-1. Základy dátových štruktúr
-2. Polia (Arrays)
-3. Spojové zoznamy (Linked Lists)
-4. Zásobníky (Stacks)
-5. Fronty (Queues)
-6. Stromy (Trees)
-7. Binárne vyhľadávacie stromy (BST)
-8. Haldy (Heaps)
-9. Grafy (Graphs)
-10. Pokročilé opakovanie
-
-Ostatné témy (Algoritmy, OOP, Databázy, Web) sú pripravené na doplnenie otázok.
-
----
-
 ## 👨‍💻 Autor
 
 Projekt vytvorený ako školská práca zameraná na gamifikované učenie informatiky.
