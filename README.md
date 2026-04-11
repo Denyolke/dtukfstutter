@@ -146,7 +146,7 @@ users/
 ![Úspech](ukazky/onSuccess.png)
 
 ### Game Over
-![Game Over](ukazky/onFail.png)
+![Game Over](ukazky/QuizFail.png)
 
 ### Leaderboard
 ![Leaderboard](ukazky/Leaderboard.png)
