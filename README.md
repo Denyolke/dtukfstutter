@@ -52,7 +52,7 @@ com.example.stutter
 ## 🧠 Herná mechanika
 
 ### Témy a úrovne
-- 5 tém, každá obsahuje 10 úrovní
+- 3 témy, každá obsahuje 10 úrovní
 - Úrovne sú odomykané postupne – každú ďalšiu odomkne dokončenie predchádzajúcej
 - Každá úroveň prináša **+15 XP** pri úspešnom dokončení
 
