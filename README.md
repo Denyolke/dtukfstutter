@@ -52,13 +52,11 @@ com.example.stutter
 ## 🧠 Herná mechanika
 
 ### Témy a úrovne
-
 - 5 tém, každá obsahuje 10 úrovní
 - Úrovne sú odomykané postupne – každú ďalšiu odomkne dokončenie predchádzajúcej
 - Každá úroveň prináša **+15 XP** pri úspešnom dokončení
 
 ### Kvíz
-
 - 10 otázok s 4 možnosťami odpovede
 - Hráč začína s **3 srdciami** (životy)
 - Nesprávna odpoveď = strata srdca
@@ -66,34 +64,32 @@ com.example.stutter
 - Dokončenie bez straty sŕdc = XP odmena + uloženie pokroku
 
 ### Streak systém
-
-| Aktivita                      | Výsledok                |
-| ----------------------------- | ----------------------- |
-| Aktivita dnes (menej ako 24h) | Streak ostáva rovnaký   |
-| Aktivita včera (24–48h)       | Streak +1               |
-| Dlhšia pauza (nad 48h)        | Streak sa resetuje na 1 |
+| Aktivita | Výsledok |
+|----------|----------|
+| Aktivita dnes (menej ako 24h) | Streak ostáva rovnaký |
+| Aktivita včera (24–48h) | Streak +1 |
+| Dlhšia pauza (nad 48h) | Streak sa resetuje na 1 |
 
 ---
 
 ## 🛠️ Technológie
 
-| Technológia                 | Použitie                         |
-| --------------------------- | -------------------------------- |
-| **Java**                    | Hlavný programovací jazyk        |
-| **Android SDK**             | Mobilná platforma                |
-| **Firebase Authentication** | Správa používateľov              |
-| **Firebase Firestore**      | Cloudová databáza                |
-| **ViewModel + LiveData**    | Správa stavu UI                  |
-| **RecyclerView**            | Zoznamy tém, úrovní, leaderboard |
-| **Material Design**         | UI komponenty                    |
-| **ConstraintLayout**        | Rozloženie obrazoviek            |
+| Technológia | Použitie |
+|-------------|----------|
+| **Java** | Hlavný programovací jazyk |
+| **Android SDK** | Mobilná platforma |
+| **Firebase Authentication** | Správa používateľov |
+| **Firebase Firestore** | Cloudová databáza |
+| **ViewModel + LiveData** | Správa stavu UI |
+| **RecyclerView** | Zoznamy tém, úrovní, leaderboard |
+| **Material Design** | UI komponenty |
+| **ConstraintLayout** | Rozloženie obrazoviek |
 
 ---
 
 ## 📦 Nastavenie projektu
 
 ### Požiadavky
-
 - Android Studio (Hedgehog alebo novší)
 - Android SDK 26+
 - Firebase projekt s aktívnym Authentication a Firestore
@@ -101,7 +97,6 @@ com.example.stutter
 ### Inštalácia
 
 1. Klonuj repozitár:
-
    ```bash
    git clone https://github.com/tvoj-username/stutter.git
    ```
@@ -111,7 +106,6 @@ com.example.stutter
 3. Pridaj súbor `google-services.json` do priečinka `app/` (stiahni z Firebase konzoly).
 
 4. V Firebase konzole povoľ:
-
    - **Authentication** → Email/Password
    - **Firestore Database**
 
@@ -142,16 +136,20 @@ users/
 
 ## 📸 Obrazovky
 
-| Obrazovka           | Popis                        |
-| ------------------- | ---------------------------- |
-| **Auth**            | Prihlásenie / registrácia    |
-| **Home**            | Zoznam tém s progress barmi  |
-| **Level Selection** | Výber úrovne v téme          |
-| **Quiz**            | Kvíz s otázkami a srdciami   |
-| **Quiz Completion** | Výsledok úspešného kvízu     |
-| **Game Over**       | Obrazovka po minútí sŕdc     |
-| **Leaderboard**     | Top 10 hráčov podľa XP       |
-| **Profile**         | Štatistiky, foto, odhlásenie |
+### Registrácia
+![Registrácia](ukazky/Registracia.png)
+
+### Kvízový systém
+![Kvíz](ukazky/QuizSystem.png)
+
+### Výsledok kvízu
+![Úspech](ukazky/onSuccess.png)
+
+### Game Over
+![Game Over](ukazky/onFail.png)
+
+### Leaderboard
+![Leaderboard](ukazky/Leaderboard.png)
 
 ---
 
